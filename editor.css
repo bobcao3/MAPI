@@ -17,5 +17,6 @@ html, body {
 }
 
 .floating-box {
+    z-index: 9;
     position: absolute;
 }

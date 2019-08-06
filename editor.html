@@ -17,6 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <!-- Vue: production version, optimized for size and speed -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
 
         <!-- Our stuff -->
         <link rel="stylesheet" type="text/css" href="editor.css">
@@ -27,6 +28,7 @@
                 v-for="box in boxes"
                 v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px' }" 
                 v-bind:key="box.id"
+                v-bind:boxdata="box"
             />
         </div>
         <script src="editor.js"></script>

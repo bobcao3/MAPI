@@ -1,6 +1,31 @@
 Vue.component('box', {
-    //props: ['boxdata'],
-    template: '<div class="uk-card uk-card-body uk-card-primary floating-box">DADA</div>'
+    props: ['boxdata'],
+    methods: {
+        ondragstart: function(event) {
+            mouseStartX = event.x;
+            mouseStartY = event.y;
+            boxStartX = this.boxdata.anchor.x;
+            boxStartY = this.boxdata.anchor.y;
+            element = this.$el;
+            this.mouseDown = true;
+        },
+        ondrag: function(event) {
+            if (this.mouseDown) {
+                element.style.left = (boxStartX + event.x - mouseStartX) + 'px';
+                element.style.top = (boxStartY + event.y - mouseStartY) + 'px';    
+            }
+        },
+        ondragend: function(event) {
+            if (this.mouseDown) {
+                element.style.left = (boxStartX + event.x - mouseStartX) + 'px';
+                element.style.top = (boxStartY + event.y - mouseStartY) + 'px';
+                this.boxdata.anchor.x = boxStartX + event.x - mouseStartX;
+                this.boxdata.anchor.y = boxStartY + event.y - mouseStartY;
+                this.mouseDown = false;
+            }
+        }
+    },
+    template: '<div class="uk-card uk-card-body uk-card-primary floating-box" v-on:mousedown="ondragstart" v-on:mousemove="ondrag" v-on:mouseup="ondragend">DADA</div>'
 })
 
 var graph = new Vue({
