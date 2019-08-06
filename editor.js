@@ -1,27 +1,35 @@
+var draggingEvent = {
+    mouseDown: false,
+    dataElement: undefined,
+    mouseStartX: undefined,
+    mouseStartY: undefined,
+    boxStartX: undefined,
+    boxStartY: undefined,
+}
+
 Vue.component('box', {
     props: ['boxdata'],
     methods: {
         ondragstart: function(event) {
-            mouseStartX = event.x;
-            mouseStartY = event.y;
-            boxStartX = this.boxdata.anchor.x;
-            boxStartY = this.boxdata.anchor.y;
-            element = this.$el;
-            this.mouseDown = true;
+            draggingEvent.mouseStartX = event.x;
+            draggingEvent.mouseStartY = event.y;
+            draggingEvent.boxStartX = this.boxdata.anchor.x;
+            draggingEvent.boxStartY = this.boxdata.anchor.y;
+            draggingEvent.dataElement = this.boxdata;
+            draggingEvent.mouseDown = true;
         },
         ondrag: function(event) {
-            if (this.mouseDown) {
-                element.style.left = (boxStartX + event.x - mouseStartX) + 'px';
-                element.style.top = (boxStartY + event.y - mouseStartY) + 'px';    
+            if (draggingEvent.mouseDown) {
+                draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + event.x - draggingEvent.mouseStartX;
+                draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + event.y - draggingEvent.mouseStartY;
             }
         },
         ondragend: function(event) {
-            if (this.mouseDown) {
-                element.style.left = (boxStartX + event.x - mouseStartX) + 'px';
-                element.style.top = (boxStartY + event.y - mouseStartY) + 'px';
-                this.boxdata.anchor.x = boxStartX + event.x - mouseStartX;
-                this.boxdata.anchor.y = boxStartY + event.y - mouseStartY;
-                this.mouseDown = false;
+            if (draggingEvent.mouseDown) {
+                draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + event.x - draggingEvent.mouseStartX;
+                draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + event.y - draggingEvent.mouseStartY;
+                draggingEvent.mouseDown = false;
+                draggingEvent.dataElement = undefined;
             }
         }
     },
