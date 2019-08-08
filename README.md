@@ -1,2 +1,2 @@
 # cs160-final-MAPI
-A graph based story editor
+A graph based story editor for game designer.
