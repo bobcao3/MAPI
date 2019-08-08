@@ -3,6 +3,14 @@ html, body {
     margin: 0;
 }
 
+.graph-canvas-background {
+    /* This produces the grid background */
+    background-size: 32px 32px;
+    background-image: linear-gradient(to right, rgba(0,0,0,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.2) 1px, transparent 1px);
+
+    overflow: hidden;
+}
+
 #graph-canvas {
     min-width: 100vw;
     min-height: 100vh;
@@ -10,10 +18,6 @@ html, body {
     display: block;
     left: 0;
     top: 0;
-
-    /* This produces the grid background */
-    background-size: 32px 32px;
-    background-image: linear-gradient(to right, rgba(0,0,0,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.2) 1px, transparent 1px);
 }
 
 .floating-box {
