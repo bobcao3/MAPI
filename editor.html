@@ -25,20 +25,36 @@
         <link rel="stylesheet" type="text/css" href="editor.css">
         <!-- Merged from codeanywhere (for menu) -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="{% static 'draw/vendor/bootstrap/css/bootstrap.min.css' %}">
-        <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
         <!-- Add icon library -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-        <link rel="stylesheet" type="text/css" href="{% static 'draw/index.css' %}">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     </head>
-    <body>
+    <body class="graph-canvas-background">
         <!-- Navigation bar -->
+        <div class="w3-bar w3-card" id="navBar">
+            <div class="side-shapes">
+                <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-left"><i class="material-icons">folder_open</i></a>
+            </div>
+            <div class="center-shapes">
+                <!-- <a onclick = "clickCircle()" href="javascript:void(0)" class="w3-hide-small"><i id="circle" class="material-icons">panorama_fish_eye</i></a> -->
+                <a onclick = "clickRect()" href="javascript:void(0)" class="w3-hide-small"><i id = "rect"class="material-icons">crop_5_4</i></a>
+                <i class="material-icons">undo</i>
+                <i class="material-icons">redo</i>
+                <i class="material-icons">title</i>
+                <i class="material-icons">filter</i>
+                <i class="material-icons">filter_1</i>
+                <!-- <a onclick = "clickTri()" href="javascript:void(0)" class="w3-hide-small"><i  id = "tri"class="material-icons">details</i></a> -->
+            </div>
+            <div class="side-shapes">
+                <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-right"><i class="material-icons">save_alt</i></a>
+            </div>
+        </div>
+        <!-- Navigation bar -->
+<<<<<<< HEAD
         <div class="w3-top">
 
          <div class="w3-bar w3-card" id="navBar">
@@ -58,10 +74,12 @@
 
          </div>
  </div>
+=======
+>>>>>>> 429ff9b2a031b6c87432dfb74999b04fc912d65d
         <div id="graph-canvas">
             <box
                 v-for="box in boxes"
-                v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px' }"
+                v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px', backgroundColor: box.color }"
                 v-bind:key="box.id"
                 v-bind:boxdata="box"
             />
