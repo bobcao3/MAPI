@@ -30,7 +30,6 @@ html, body {
     background-color: #78909C;
     box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.1);
     z-index: 20;
-
     position: absolute;
     top: 0px;
 }
@@ -51,6 +50,8 @@ html, body {
     color: white;
     padding: 8px;
     margin: 0.15em;
+    width: 10px;
+    height: 10px;
 }
 
 /* .w3-top.material-icons:hover {
