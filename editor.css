@@ -7,7 +7,8 @@ html, body {
 .graph-canvas-background {
     /* This produces the grid background */
     background-size: 32px 32px;
-    background-image: linear-gradient(to right, rgba(0,0,0,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.2) 1px, transparent 1px);
+    background-color: #FCFCFC;
+    /* background-image: linear-gradient(to right, rgba(0,0,0,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.2) 1px, transparent 1px); */
 }
 
 #graph-canvas {
