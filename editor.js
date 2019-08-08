@@ -116,13 +116,13 @@ graph_canvas.onpointerleave = pointerup;
 
 window.addEventListener('scroll', function(e) {
     last_known_scroll_position = window.scrollY;
-  
+
     if (!ticking) {
       window.requestAnimationFrame(function() {
         doSomething(last_known_scroll_position);
         ticking = false;
       });
-  
+
       ticking = true;
     }
 });
@@ -140,3 +140,15 @@ graph.boxes.push({
     },
     color: "rgb(255,127,40)"
 })
+
+// click the reactangle to make cell
+function clickRect(){
+   var element = document.getElementById("rect");
+   // var c = document.getElementById("circle");
+   // var t = document.getElementById("tri");
+//     element.classList.toggle("clickedStyle");
+   
+   element.style.color = "#FF80AB";
+   // c.style.color = "white";
+   // t.style.color = "white";
+ }

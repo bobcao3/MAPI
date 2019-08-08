@@ -37,7 +37,6 @@ html, body {
 .center-shapes {
     display: flex;
     flex-grow: 100;
-
     justify-content: center;
     align-items: center;
 }
@@ -50,8 +49,6 @@ html, body {
     color: white;
     padding: 8px;
     margin: 0.15em;
-    width: 10px;
-    height: 10px;
 }
 
 /* .w3-top.material-icons:hover {
