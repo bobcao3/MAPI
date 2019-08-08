@@ -37,7 +37,7 @@ html, body {
 
 .center-shapes {
     display: flex;
-    flex-grow: 300;
+    flex-grow: 100;
 
     justify-content: center;
     align-items: center;
@@ -49,7 +49,8 @@ html, body {
 
 .material-icons {
     color: white;
-    margin: 0.35em;
+    padding: 8px;
+    margin: 0.15em;
 }
 
 /* .w3-top.material-icons:hover {
