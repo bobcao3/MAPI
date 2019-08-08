@@ -38,6 +38,7 @@ html, body {
 .center-shapes {
     display: flex;
     flex-grow: 100;
+    padding: 8px;
     justify-content: center;
     align-items: center;
 }
