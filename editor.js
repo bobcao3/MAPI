@@ -7,6 +7,9 @@ let draggingEvent = {
     boxStartY: undefined,
 }
 
+let zoomLevel = 1.0;
+let wheelDelta = 1.05;
+
 Vue.component('box', {
     props: ['boxdata'],
     methods: {
@@ -79,7 +82,7 @@ let graph = new Vue({
     }
 })
 
-graph_canvas = document.getElementById("graph-canvas");
+graph_canvas = document.getElementById("graph-canvas-background");
 
 let canvasDragginEvent = {
     mouseDown: false,
@@ -99,27 +102,29 @@ graph_canvas.onpointerdown = function(event) {
 
 graph_canvas.onpointermove = function(event) {
     if (draggingEvent.mouseDown) {
-        draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + event.x - draggingEvent.mouseStartX;
-        draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + event.y - draggingEvent.mouseStartY;
+        draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + (event.x - draggingEvent.mouseStartX) / zoomLevel;
+        draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + (event.y - draggingEvent.mouseStartY) / zoomLevel;
     }
     if (canvasDragginEvent.mouseDown) {
         let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
         let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
-        graph_canvas.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+        graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
+        graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
     }
 };
 
 function pointerup(event) {
     if (draggingEvent.mouseDown) {
-        draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + event.x - draggingEvent.mouseStartX;
-        draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + event.y - draggingEvent.mouseStartY;
+        draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + (event.x - draggingEvent.mouseStartX) / zoomLevel;
+        draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + (event.y - draggingEvent.mouseStartY) / zoomLevel;
         draggingEvent.mouseDown = false;
         draggingEvent.dataElement = undefined;
     }
     if (canvasDragginEvent.mouseDown) {
         let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
         let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
-        graph_canvas.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+        graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
+        graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
         canvasDragginEvent.elementStartX = x;
         canvasDragginEvent.elementStartY = y;
         canvasDragginEvent.mouseDown = false;
@@ -129,17 +134,14 @@ function pointerup(event) {
 graph_canvas.onpointerup = pointerup
 graph_canvas.onpointerleave = pointerup;
 
-window.addEventListener('scroll', function(e) {
-    last_known_scroll_position = window.scrollY;
-
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        doSomething(last_known_scroll_position);
-        ticking = false;
-      });
-
-      ticking = true;
+window.addEventListener("wheel", event => {
+    let delta = event.deltaY;
+    if (delta > 0) {
+        zoomLevel /= wheelDelta;
+    } else {
+        zoomLevel *= wheelDelta;
     }
+    graph_canvas.style.setProperty('--scale', zoomLevel);
 });
 
 
