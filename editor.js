@@ -11,7 +11,7 @@ let zoomLevel = 1.0;
 let wheelDelta = 1.05;
 
 Vue.component('box', {
-    props: ['boxdata'],
+    props: ['boxdata', 'editing-state'],
     methods: {
         ondragstart: function(event) {
             draggingEvent.mouseStartX = event.x;
@@ -20,12 +20,21 @@ Vue.component('box', {
             draggingEvent.boxStartY = this.boxdata.anchor.y;
             draggingEvent.dataElement = this.boxdata;
             draggingEvent.mouseDown = true;
+
+            
+            this.editingState.selected = this.boxdata;
+        }
+    },
+    computed: {
+        isSelected: (i) => {
+            return i.editingState.selected && i.editingState.selected == i.boxdata;
         }
     },
     template: `
         <div
             class="uk-card uk-card-body uk-card-primary floating-box non-select"
             v-on:pointerdown="ondragstart"
+            v-bind:class="{ selected: isSelected }"
             v-bind:style="{
                 transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0)',
                 width: boxdata.size.x + 'px',
@@ -39,7 +48,7 @@ Vue.component('box', {
 })
 
 let graph = new Vue({
-    el: '#graph-canvas',
+    el: '#app',
     data: {
         boxes: [
             {
@@ -78,7 +87,10 @@ let graph = new Vue({
                 },
                 color: "#ffff00"
             }
-        ]
+        ],
+        editingState: {
+            selected: undefined
+        }
     }
 })
 
@@ -97,6 +109,7 @@ graph_canvas.onpointerdown = function(event) {
         canvasDragginEvent.mouseDown = true;
         canvasDragginEvent.mouseStartX = event.x;
         canvasDragginEvent.mouseStartY = event.y;
+        graph.editingState.selected = undefined;
     }
 }
 

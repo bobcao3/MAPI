@@ -38,6 +38,13 @@ html, body {
 
 .floating-box {
     position: absolute;
+    transition: box-shadow 0.3s ease;
+    transition: outline-color 0.3s ease;
+}
+
+.floating-box.selected {
+    box-shadow: 0em 0.0em 1.5em rgb(82, 206, 255);
+    outline: 2px dashed rgb(0, 187, 255);
 }
 
 .uk-navbar-dropdown{
@@ -49,11 +56,7 @@ html, body {
     background-color: #78909C;
     box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.1);
 }
-.color-row{
-  display: flex;
-  flex-wrap: nowrap;
 
-}
 .uk-button{
    width: 10px;
    height:50px;
