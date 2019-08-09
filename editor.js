@@ -147,8 +147,11 @@ function clickRect(){
    // var c = document.getElementById("circle");
    // var t = document.getElementById("tri");
 //     element.classList.toggle("clickedStyle");
-   
+
    element.style.color = "#FF80AB";
    // c.style.color = "white";
    // t.style.color = "white";
  }
+function clickStticker(){
+
+}

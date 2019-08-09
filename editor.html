@@ -34,6 +34,14 @@
 
     </head>
     <body class="graph-canvas-background">
+      <div id="graph-canvas">
+          <box
+              v-for="box in boxes"
+              v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px', backgroundColor: box.color }"
+              v-bind:key="box.id"
+              v-bind:boxdata="box"
+          />
+      </div>
         <!-- Navigation bar -->
         <div class="w3-bar w3-card" id="navBar">
             <div class="side-shapes">
@@ -47,14 +55,21 @@
                 <i class="material-icons">title</i>
                 <i class="material-icons">filter</i>
                 <!-- <a onclick = "clickStticker()" href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">filter_1</i></a> -->
-                <div class="w3-dropdown-hover w3-hide-small">
-                <a class="w3-padding-large w3-button">MORE <i class="fa fa-caret-down">filter_1</i></a>
-                  <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                <div class="w3-dropdown-hover">
+                <!--This is the icon dropdown  -->  
+                <a > <i class="material-icons">filter_1</i></a>
+                  <div id = "colorbar" class="w3-dropdown-content w3-bar-block w3-border">
                   <a href="#" class="w3-bar-item w3-button">Merchandise</a>
-                  <a href="#" class="w3-bar-item w3-button">Extras</a>
-                  <a href="#" class="w3-bar-item w3-button">Media</a>
+                  <!-- <a href="#" class="w3-bar-item w3-button">Extras</a>
+                  <a href="#" class="w3-bar-item w3-button">Media</a> -->
                   </div>
                 </div>
+                <!--This is the UIkit dropdown  -->
+                <div class="uk-inline">
+                <button class="uk-button uk-button-default" type="button">Click</button>
+                <div id  = "colorbar"uk-dropdown="mode: click">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</div>
+                </div>
+
                 <!-- <a onclick = "clickTri()" href="javascript:void(0)" class="w3-hide-small"><i  id = "tri"class="material-icons">details</i></a> -->
             </div>
             <div class="side-shapes">
@@ -62,14 +77,7 @@
             </div>
         </div>
         <!-- Navigation bar -->
-        <div id="graph-canvas">
-            <box
-                v-for="box in boxes"
-                v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px', backgroundColor: box.color }"
-                v-bind:key="box.id"
-                v-bind:boxdata="box"
-            />
-        </div>
+
         <script src="editor.js"></script>
     </body>
 </html>
