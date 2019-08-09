@@ -1,4 +1,4 @@
-var draggingEvent = {
+let draggingEvent = {
     mouseDown: false,
     dataElement: undefined,
     mouseStartX: undefined,
@@ -19,10 +19,23 @@ Vue.component('box', {
             draggingEvent.mouseDown = true;
         }
     },
-    template: '<div class="uk-card uk-card-body uk-card-primary floating-box non-select" v-on:pointerdown="ondragstart">DADA</div>'
+    template: `
+        <div
+            class="uk-card uk-card-body uk-card-primary floating-box non-select"
+            v-on:pointerdown="ondragstart"
+            v-bind:style="{
+                transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0)',
+                width: boxdata.size.x + 'px',
+                height: boxdata.size.y + 'px',
+                backgroundColor: boxdata.color
+            }">
+
+            DADA
+        </div>
+    `
 })
 
-var graph = new Vue({
+let graph = new Vue({
     el: '#graph-canvas',
     data: {
         boxes: [
@@ -68,12 +81,12 @@ var graph = new Vue({
 
 graph_canvas = document.getElementById("graph-canvas");
 
-var canvasDragginEvent = {
+let canvasDragginEvent = {
     mouseDown: false,
     mouseStartX: undefined,
     mouseStartY: undefined,
-    elementStartX: undefined,
-    elementStartY: undefined,
+    elementStartX: 0,
+    elementStartY: 0,
 }
 
 graph_canvas.onpointerdown = function(event) {
@@ -81,8 +94,6 @@ graph_canvas.onpointerdown = function(event) {
         canvasDragginEvent.mouseDown = true;
         canvasDragginEvent.mouseStartX = event.x;
         canvasDragginEvent.mouseStartY = event.y;
-        canvasDragginEvent.elementStartX = graph_canvas.offsetLeft;
-        canvasDragginEvent.elementStartY = graph_canvas.offsetTop;
     }
 }
 
@@ -92,8 +103,9 @@ graph_canvas.onpointermove = function(event) {
         draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + event.y - draggingEvent.mouseStartY;
     }
     if (canvasDragginEvent.mouseDown) {
-        graph_canvas.style.left = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX + 'px';
-        graph_canvas.style.top = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY + 'px';
+        let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
+        let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
+        graph_canvas.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
     }
 };
 
@@ -105,8 +117,11 @@ function pointerup(event) {
         draggingEvent.dataElement = undefined;
     }
     if (canvasDragginEvent.mouseDown) {
-        graph_canvas.style.left = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX + 'px';
-        graph_canvas.style.top = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY + 'px';
+        let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
+        let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
+        graph_canvas.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+        canvasDragginEvent.elementStartX = x;
+        canvasDragginEvent.elementStartY = y;
         canvasDragginEvent.mouseDown = false;
     }
 }
@@ -143,15 +158,16 @@ graph.boxes.push({
 
 // click the reactangle to make cell
 function clickRect(){
-   var element = document.getElementById("rect");
-   // var c = document.getElementById("circle");
-   // var t = document.getElementById("tri");
+    let element = document.getElementById("rect");
+   // let c = document.getElementById("circle");
+   // let t = document.getElementById("tri");
 //     element.classList.toggle("clickedStyle");
 
-   element.style.color = "#FF80AB";
+    element.style.color = "#FF80AB";
    // c.style.color = "white";
    // t.style.color = "white";
- }
+}
+
 function clickStticker(){
 
 }
