@@ -49,6 +49,13 @@ Vue.component('box', {
 
 let graph = new Vue({
     el: '#app',
+    methods: {
+        changeColor: function(event) {
+            if (this.editingState.selected) {
+                this.editingState.selected.color = event.target.style.backgroundColor;
+            }
+        }
+    },
     data: {
         boxes: [
             {
