@@ -10,6 +10,13 @@ let draggingEvent = {
 let zoomLevel = 1.0;
 let wheelDelta = 1.05;
 
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 Vue.component('box', {
     props: ['boxdata', 'editing-state'],
     methods: {
@@ -54,46 +61,33 @@ let graph = new Vue({
             if (this.editingState.selected) {
                 this.editingState.selected.color = event.target.style.backgroundColor;
             }
+        },
+        // This is the callback on the button
+        createBox: function(event) {
+            // This defines the new box data
+            let newBox = {
+                // Generate a random unique id for this new box (don't modify this)
+                id: uuidv4(),
+                // The position it will be put on
+                // You may want to set it to mouse position or something
+                anchor: {
+                    x: Math.random() * 1000, // Random value as example
+                    y: Math.random() * 600   // Random value as example
+                },
+                // The size of newly created box
+                size: {
+                    x: 100 + Math.random() * 100,
+                    y: 100 + Math.random() * 100  // Random position as example
+                },
+                // The color of the new box
+                color: "rgba(255,128,128)" // can also be "#ff8080" or other things
+            }
+            // Now insert this new box into the data
+            this.boxes.push(newBox);
         }
     },
     data: {
         boxes: [
-            {
-                id: "0000-0000-0000-0000",
-                anchor: {
-                    x: 100,
-                    y: 50
-                },
-                size: {
-                    x: 150,
-                    y: 150
-                },
-                color: "#ff00ff"
-            },
-            {
-                id: "0000-0000-0000-0001",
-                anchor: {
-                    x: 500,
-                    y: 175
-                },
-                size: {
-                    x: 100,
-                    y: 100
-                },
-                color: "#00ffff"
-            },
-            {
-                id: "0000-0000-0000-0002",
-                anchor: {
-                    x: 450,
-                    y: 350
-                },
-                size: {
-                    x: 300,
-                    y: 150
-                },
-                color: "#ffff00"
-            }
         ],
         editingState: {
             selected: undefined
@@ -163,20 +157,6 @@ window.addEventListener("wheel", event => {
     }
     graph_canvas.style.setProperty('--scale', zoomLevel);
 });
-
-
-graph.boxes.push({
-    id: "0000-0000-0000-0003",
-    anchor: {
-        x: 450,
-        y: 0
-    },
-    size: {
-        x: 300,
-        y: 150
-    },
-    color: "rgb(255,127,40)"
-})
 
 // click the reactangle to make cell
 function clickRect(){

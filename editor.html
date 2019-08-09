@@ -57,7 +57,8 @@
                         <li onclick="clickRect()"><i class="material-icons" id="rect">crop_5_4</i></li>
                         <li><i class="material-icons">undo</i></li>
                         <li><i class="material-icons">redo</i></li>
-                        <li><i class="material-icons">title</i></li>
+                        <!-- To bind a callback to an event, use v-on:event="callback" -->
+                        <li><i class="material-icons" v-on:click="createBox">title</i></li>
                         <li><i class="material-icons">filter</i></li>
     
                         <li>
