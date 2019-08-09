@@ -33,14 +33,15 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     </head>
-    <body class="graph-canvas-background">
-        <div id="graph-canvas">
-            <box
-                v-for="box in boxes"
-                v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px', backgroundColor: box.color }"
-                v-bind:key="box.id"
-                v-bind:boxdata="box"
-            />
+    <body>
+        <div id="graph-canvas-background">
+            <div id="graph-canvas">
+                <box
+                    v-for="box in boxes"
+                    v-bind:key="box.id"
+                    v-bind:boxdata="box"
+                />
+            </div>            
         </div>
         <!-- Navigation bar -->
         <nav class="uk-navbar-container non-select" id="navBar" uk-navbar>

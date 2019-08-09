@@ -4,22 +4,36 @@ html, body {
     overflow: hidden;
 }
 
-.graph-canvas-background {
+#graph-canvas-background {
     /* This produces the grid background */
-    background-color: #FCFCFC;
-}
-
-#graph-canvas {
     min-width: 100vw;
     min-height: 100vh;
     position: absolute;
-    display: block;
     left: 0;
     top: 0;
+    --bg-offset-x: 0;
+    --bg-offset-y: 0;
+    --scale: 1.0;
+}
 
+#graph-canvas {
+    display: block;
+    transform: translate(var(--bg-offset-x), var(--bg-offset-y)) scale(var(--scale));
+}
+
+#graph-canvas-background:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
     /* This produces the grid background */
-    background-size: 32px 32px;
+    --bg-size: 32px;
+    --bg-size-scaled: calc(var(--bg-size) * var(--scale));
+    background-size: var(--bg-size-scaled) var(--bg-size-scaled);
     background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-color: #FCFCFC;
+    background-position: var(--bg-offset-x) var(--bg-offset-y);
 }
 
 .floating-box {
