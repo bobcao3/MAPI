@@ -19,7 +19,7 @@ Vue.component('box', {
             draggingEvent.mouseDown = true;
         }
     },
-    template: '<div class="uk-card uk-card-body uk-card-primary floating-box" v-on:pointerdown="ondragstart">DADA</div>'
+    template: '<div class="uk-card uk-card-body uk-card-primary floating-box non-select" v-on:pointerdown="ondragstart">DADA</div>'
 })
 
 var graph = new Vue({

@@ -34,48 +34,42 @@
 
     </head>
     <body class="graph-canvas-background">
-      <div id="graph-canvas">
-          <box
-              v-for="box in boxes"
-              v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px', backgroundColor: box.color }"
-              v-bind:key="box.id"
-              v-bind:boxdata="box"
-          />
-      </div>
-        <!-- Navigation bar -->
-        <div class="w3-bar w3-card" id="navBar">
-            <div class="side-shapes">
-                <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-left"><i class="material-icons">folder_open</i></a>
-            </div>
-            <div class="center-shapes">
-                <!-- <a onclick = "clickCircle()" href="javascript:void(0)" class="w3-hide-small"><i id="circle" class="material-icons">panorama_fish_eye</i></a> -->
-                <a onclick = "clickRect()" href="javascript:void(0)" class="w3-hide-small"><i id = "rect"class="material-icons">crop_5_4</i></a>
-                <i class="material-icons">undo</i>
-                <i class="material-icons">redo</i>
-                <i class="material-icons">title</i>
-                <i class="material-icons">filter</i>
-                <!-- <a onclick = "clickStticker()" href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">filter_1</i></a> -->
-                <div class="w3-dropdown-hover">
-                <!--This is the icon dropdown  -->  
-                <a > <i class="material-icons">filter_1</i></a>
-                  <div id = "colorbar" class="w3-dropdown-content w3-bar-block w3-border">
-                  <a href="#" class="w3-bar-item w3-button">Merchandise</a>
-                  <!-- <a href="#" class="w3-bar-item w3-button">Extras</a>
-                  <a href="#" class="w3-bar-item w3-button">Media</a> -->
-                  </div>
-                </div>
-                <!--This is the UIkit dropdown  -->
-                <div class="uk-inline">
-                <button class="uk-button uk-button-default" type="button">Click</button>
-                <div id  = "colorbar"uk-dropdown="mode: click">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</div>
-                </div>
-
-                <!-- <a onclick = "clickTri()" href="javascript:void(0)" class="w3-hide-small"><i  id = "tri"class="material-icons">details</i></a> -->
-            </div>
-            <div class="side-shapes">
-                <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-right"><i class="material-icons">save_alt</i></a>
-            </div>
+        <div id="graph-canvas">
+            <box
+                v-for="box in boxes"
+                v-bind:style="{ left: box.anchor.x + 'px', top: box.anchor.y + 'px', width: box.size.x + 'px', height: box.size.y + 'px', backgroundColor: box.color }"
+                v-bind:key="box.id"
+                v-bind:boxdata="box"
+            />
         </div>
+        <!-- Navigation bar -->
+        <nav class="uk-navbar-container non-select" id="navBar" uk-navbar>
+            <div class="uk-navbar-left uk-padding-small">
+                <ul class="uk-navbar-nav">
+                    <li><i class="material-icons">folder_open</i></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-center uk-padding-small">
+                <ul class="uk-navbar-nav">
+                    <li><i class="material-icons" id="rect">crop_5_4</i></li>
+                    <li><i class="material-icons">undo</i></li>
+                    <li><i class="material-icons">redo</i></li>
+                    <li><i class="material-icons">title</i></li>
+                    <li>
+                        <i class="material-icons">filter</i>
+                        <!--This is the UIkit dropdown  -->
+                        <div id="colorbar" class="uk-navbar-dropdown">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right uk-padding-small">
+                <ul class="uk-navbar-nav">
+                    <li><i class="material-icons">save_alt</i></li>
+                </ul>
+            </div>
+        </nav>
         <!-- Navigation bar -->
 
         <script src="editor.js"></script>
