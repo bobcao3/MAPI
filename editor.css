@@ -26,10 +26,25 @@ html, body {
     position: absolute;
 }
 
+.uk-navbar-dropdown{
+    width: 440px;
+}
+
 /* Merged from codeanywhere */
 #navBar {
     background-color: #78909C;
     box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.1);
+}
+.color-row{
+  display: flex;
+  flex-wrap: nowrap;
+
+}
+.uk-button{
+   width: 100px;
+   height:50px;
+   margin-left:15px;
+   /* height: 10px; */
 }
 
 .material-icons {

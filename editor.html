@@ -51,15 +51,30 @@
             </div>
             <div class="uk-navbar-center uk-padding-small">
                 <ul class="uk-navbar-nav">
-                    <li><i class="material-icons" id="rect">crop_5_4</i></li>
+                    <li onclick="clickRect()"><i class="material-icons" id="rect">crop_5_4</i></li>
                     <li><i class="material-icons">undo</i></li>
                     <li><i class="material-icons">redo</i></li>
                     <li><i class="material-icons">title</i></li>
+                    <li><i class="material-icons">filter</i></li>
+
                     <li>
-                        <i class="material-icons">filter</i>
+                        <i class="material-icons">filter_1</i>
                         <!--This is the UIkit dropdown  -->
                         <div id="colorbar" class="uk-navbar-dropdown">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                            <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. -->
+                          <div class = "color-row">
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #FF8080;">&nbsp</button>
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #FFC580;">&nbsp</button>
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #FFE380;">&nbsp</button>
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #92FF80;">&nbsp</button>
+                          </div>
+                          <div class = "color-row">
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #80E1FF;">&nbsp</button>
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #8A80FF;">&nbsp</button>
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #ED80FF;">&nbsp</button>
+                            <button class="uk-button uk-width-1-1 uk-margin-small-bottom" style = "background-color: #FF80AB;">&nbsp</button>
+                          </div>
+
                         </div>
                     </li>
                 </ul>
