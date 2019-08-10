@@ -47,10 +47,6 @@ html, body {
     outline: 2px dashed rgb(0, 187, 255);
 }
 
-.uk-navbar-dropdown{
-    width: 340px;
-}
-
 /* Merged from codeanywhere */
 #navBar {
     background-color: #78909C;
@@ -74,6 +70,16 @@ html, body {
 .uk-navbar-nav > li {
     display: flex;
     align-items: center;
+}
+
+.color-pallete {
+    width: 340px;
+}
+
+.color-button {
+    height: 40px;
+    width: 15px;
+    margin: 0.3em;
 }
 
 .non-select {

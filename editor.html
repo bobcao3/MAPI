@@ -68,17 +68,17 @@
                         <li>
                             <i class="material-icons">filter_1</i>
                             <!--This is the UIkit dropdown  -->
-                            <div id="colorbar" class="uk-navbar-dropdown">
+                            <div id="colorbar" class="uk-navbar-dropdown color-pallete">
                                 <p>Stickers</p>
-                                <div class = "uk-flex uk-flex-wrap">
-                                    <button class="uk-button uk-width-1-4" style="background-color: #FF8080;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #FFC580;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #FFE380;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #92FF80;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #80E1FF;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #8A80FF;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #ED80FF;" v-on:click="changeColor"></button>
-                                    <button class="uk-button uk-width-1-4" style="background-color: #FF80AB;" v-on:click="changeColor"></button>
+                                <div>
+                                    <button class="uk-button color-button" style="background-color: #FF8080;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #FFC580;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #FFE380;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #92FF80;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #80E1FF;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #8A80FF;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #ED80FF;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #FF80AB;" v-on:click="changeColor"></button>
                                 </div>
                             </div>
                         </li>
@@ -96,8 +96,8 @@
                 <div class="uk-offcanvas-bar uk-width-1-3">
                     <button class="uk-offcanvas-close" type="button" uk-close></button>
                     <div class="uk-padding-small uk-padding-remove-horizontal">
-                        <textarea class="uk-textarea uk-width-1-1" rows="7" v-model="loadData" placeholder="Paste the save file here"></textarea>
-                        <button class="uk-button uk-button-danger uk-width-1-1" v-on:click="loadWork(loadData)">Load</button>
+                        <textarea class="uk-textarea uk-width-1-1 uk-margin-top" rows="7" v-model="loadData" placeholder="Paste the save file here"></textarea>
+                        <button class="uk-button uk-button-danger uk-width-1-1 uk-margin-top" v-on:click="loadWork(loadData)">Load</button>
                     </div>
                 </div>
             </div>
@@ -110,6 +110,7 @@
                     <p>{{ saveFileStatus }}</p>
                 </div>
             </div>
+            <!-- Saved works panel -->
         </div>
 
         <script src="editor.js"></script>
