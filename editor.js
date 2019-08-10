@@ -22,6 +22,9 @@ let resizingEvent = {
 let zoomLevel = 1.0;
 let wheelDelta = 1.05;
 
+let snapToGrid = false;
+let proportional = false;
+
 let PSON = dcodeIO.PSON;
 let initialDictionary = ["id","anchor","size","color","rgba(","#",")","-"];
 let pson = new PSON.ProgressivePair(initialDictionary);
@@ -192,6 +195,26 @@ function handleCanvasDrag(event, setSize = false) {
     }
 }
 
+function handleDrag(event) {
+    let x = (event.x - draggingEvent.mouseStartX) / zoomLevel;
+    let y = (event.y - draggingEvent.mouseStartY) / zoomLevel;
+    if (proportional) {
+        if (Math.abs(x) > Math.abs(y)) {
+            y = 0;
+        } else {
+            x = 0;
+        }
+    }
+    x += draggingEvent.boxStartX;
+    y += draggingEvent.boxStartY;
+    if (snapToGrid) {
+        x = Math.round(x / 32) * 32;
+        y = Math.round(y / 32) * 32;
+    }
+    draggingEvent.dataElement.anchor.x = x;
+    draggingEvent.dataElement.anchor.y = y;
+}
+
 function handleResize(event) {
     let dx = (event.x - resizingEvent.mouseStartX) / zoomLevel;
     let dy = (event.y - resizingEvent.mouseStartY) / zoomLevel;
@@ -199,22 +222,45 @@ function handleResize(event) {
     let y = resizingEvent.boxStartY;
     let xs = resizingEvent.boxStartSizeX;
     let ys = resizingEvent.boxStartSizeY;
+
     if (resizingEvent.resizeType == "topleft") {
+        if (proportional) {
+            dx = dx;
+            dy = dx * ys / xs;
+        }
         xs -= dx;
         ys -= dy;
         x += dx;
         y += dy;
     } else if (resizingEvent.resizeType == "topright") {
+        if (proportional) {
+            dx = dx;
+            dy = -dx * ys / xs;
+        }
         xs += dx;
         ys -= dy;
         y += dy;
     } else if (resizingEvent.resizeType == "bottomleft") {
+        if (proportional) {
+            dx = -dy * xs / ys;
+            dy = dy;
+        }
         x += dx;
         xs -= dx;
         ys += dy;
     } else if (resizingEvent.resizeType == "bottomright") {
+        if (proportional) {
+            dx = dy * xs / ys;
+            dy = dy;
+        }
         xs += dx;
         ys += dy;
+    }
+    if (snapToGrid) {
+        x = Math.round(x / 32) * 32;
+        y = Math.round(y / 32) * 32;
+        xs = Math.round(xs / 32) * 32;
+        ys = Math.round(ys / 32) * 32;
     }
     if (xs < 10) xs = 10;
     if (ys < 10) ys = 10;
@@ -226,8 +272,7 @@ function handleResize(event) {
 
 graph_canvas.onpointermove = function(event) {
     if (draggingEvent.mouseDown) {
-        draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + (event.x - draggingEvent.mouseStartX) / zoomLevel;
-        draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + (event.y - draggingEvent.mouseStartY) / zoomLevel;
+        handleDrag(event);
     }
     if (canvasDragginEvent.mouseDown) {
         handleCanvasDrag(event);
@@ -239,8 +284,7 @@ graph_canvas.onpointermove = function(event) {
 
 function pointerup(event) {
     if (draggingEvent.mouseDown) {
-        draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + (event.x - draggingEvent.mouseStartX) / zoomLevel;
-        draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + (event.y - draggingEvent.mouseStartY) / zoomLevel;
+        handleDrag(event);
         draggingEvent.mouseDown = false;
     }
     if (canvasDragginEvent.mouseDown) {
@@ -267,6 +311,24 @@ window.addEventListener("wheel", event => {
         graph_canvas.style.setProperty('--scale', zoomLevel);    
     }
 });
+
+window.addEventListener("keydown", event => {
+    if (event.key == "Control") {
+        snapToGrid = true;
+    }
+    if (event.key == "Shift") {
+        proportional = true;
+    }
+})
+
+window.addEventListener("keyup", event => {
+    if (event.key == "Control") {
+        snapToGrid = false;
+    }
+    if (event.key == "Shift") {
+        proportional = false;
+    }
+})
 
 // click the reactangle to make cell
 function clickRect(){
