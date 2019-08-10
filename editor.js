@@ -40,15 +40,17 @@ Vue.component('box', {
     props: ['boxdata', 'editing-state'],
     methods: {
         ondragstart: function(event) {
-            draggingEvent.mouseStartX = event.x;
-            draggingEvent.mouseStartY = event.y;
-            draggingEvent.boxStartX = this.boxdata.anchor.x;
-            draggingEvent.boxStartY = this.boxdata.anchor.y;
-            draggingEvent.dataElement = this.boxdata;
-            draggingEvent.mouseDown = true;
-
-            
-            this.editingState.selected = this.boxdata;
+            if (this.editingState.selected != this.boxdata) {
+                this.editingState.selected = this.boxdata;
+                this.editingState.selectedText = false;
+    
+                draggingEvent.mouseStartX = event.x;
+                draggingEvent.mouseStartY = event.y;
+                draggingEvent.boxStartX = this.boxdata.anchor.x;
+                draggingEvent.boxStartY = this.boxdata.anchor.y;
+                draggingEvent.dataElement = this.boxdata;
+                draggingEvent.mouseDown = true;
+            }
         },
         onresizeStart: function(event) {
             resizingEvent.mouseStartX = event.x;
@@ -60,18 +62,25 @@ Vue.component('box', {
             resizingEvent.dataElement = this.boxdata;
             resizingEvent.mouseDown = true;
             resizingEvent.resizeType = event.target.getAttribute("resize-type");
+        },
+        ondblclick: function(event) {
+            graph.editingState.selectedText = true;
         }
     },
     computed: {
         isSelected: (i) => {
             return i.editingState.selected && i.editingState.selected == i.boxdata;
+        },
+        isTextSelected: (i) => {
+            return i.editingState.selected && i.editingState.selected == i.boxdata && i.editingState.selectedText;
         }
     },
     template: `
         <div
             class="uk-card floating-box non-select"
             v-on:pointerdown="ondragstart"
-            v-bind:class="{ selected: isSelected }"
+            v-on:dblclick="ondblclick"
+            v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected }"
             v-bind:style="{
                 transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0)',
                 width: boxdata.size.x + 'px',
@@ -80,13 +89,18 @@ Vue.component('box', {
                 textColor: boxdata.textColor
             }">
 
-            DADA
+            <textarea
+                v-bind:class="{ select: isTextSelected }"
+                v-bind:readonly="!isTextSelected"
+                v-model="boxdata.text"
+                v-bind:style="{ fontFamily: boxdata.font, fontSize: boxdata.fontSize }"
+            ></textarea>
 
-            <div class="frame" v-if="isSelected">
-            <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
-            <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
-            <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
-            <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
+            <div class="frame" v-if="isSelected && !isTextSelected">
+                <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
             </div>
         </div>
     `
@@ -102,6 +116,10 @@ let graph = new Vue({
         },
         // This is the callback on the button
         createBox: function(event) {
+            // Randomly select a font for this
+            let font = Math.random() > 0.5 ? "Roboto" : "serif";
+            // Randomly select a font size
+            let fontSize = 8.0 + Math.round(Math.random() * 8.0) + "pt";
             // This defines the new box data
             let newBox = {
                 // Generate a random unique id for this new box (don't modify this)
@@ -119,7 +137,10 @@ let graph = new Vue({
                 },
                 // The color of the new box
                 color: "rgba(255,128,128)", // can also be "#ff8080" or other things
-                textColor: "#0c0c0c"
+                textColor: "#0c0c0c", // Color of text
+                text: "New Box", // the text content
+                font: font, // Font of the text
+                fontSize: fontSize // Font size of text
             }
             // Now insert this new box into the data
             this.boxes.push(newBox);
@@ -157,7 +178,8 @@ let graph = new Vue({
         boxes: [
         ],
         editingState: {
-            selected: undefined
+            selected: undefined,
+            selectedText: false
         },
         savedData: "",
         loadData: "",
@@ -196,8 +218,8 @@ function handleCanvasDrag(event, setSize = false) {
 }
 
 function handleDrag(event) {
-    let x = (event.x - draggingEvent.mouseStartX) / zoomLevel;
-    let y = (event.y - draggingEvent.mouseStartY) / zoomLevel;
+    let dx = (event.x - draggingEvent.mouseStartX) / zoomLevel;
+    let dy = (event.y - draggingEvent.mouseStartY) / zoomLevel;
     if (proportional) {
         if (Math.abs(x) > Math.abs(y)) {
             y = 0;
@@ -205,14 +227,15 @@ function handleDrag(event) {
             x = 0;
         }
     }
-    x += draggingEvent.boxStartX;
-    y += draggingEvent.boxStartY;
+    let x = dx + draggingEvent.boxStartX;
+    let y = dy + draggingEvent.boxStartY;
     if (snapToGrid) {
         x = Math.round(x / 32) * 32;
         y = Math.round(y / 32) * 32;
     }
     draggingEvent.dataElement.anchor.x = x;
     draggingEvent.dataElement.anchor.y = y;
+    return dx * dx + dy * dy > 16.0;
 }
 
 function handleResize(event) {
@@ -290,10 +313,12 @@ function pointerup(event) {
     if (canvasDragginEvent.mouseDown) {
         handleCanvasDrag(event, true);
         canvasDragginEvent.mouseDown = false;
+        graph.editingState.selectedText = false;
     }
     if (resizingEvent.mouseDown) {
         handleResize(event);
         resizingEvent.mouseDown = false;
+        graph.editingState.selectedText = false;
     }
 }
 

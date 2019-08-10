@@ -42,9 +42,17 @@ html, body {
     transition: outline-color 0.3s ease;
     min-width: 10px;
     min-height: 10px;
+    padding: 5px;
 }
 
 .floating-box.selected {
+    box-shadow: 0em 0.0em 1.5em rgb(82, 206, 255);
+    outline-color: rgb(0, 187, 255);
+    outline-style: dashed;
+    outline-width: calc(2px / var(--scale));
+}
+
+.floating-box.textSelected {
     box-shadow: 0em 0.0em 1.5em rgb(82, 206, 255);
     outline-color: rgb(0, 187, 255);
     outline-style: dashed;
@@ -57,6 +65,7 @@ html, body {
     top: calc(-8px / var(--scale));
     width: calc(100% + 16px / var(--scale));
     height: calc(100% + 16px / var(--scale));
+    visibility: hidden;
 }
 
 .floating-box .frame .handle {
@@ -67,6 +76,24 @@ html, body {
     border-color: rgb(0, 187, 255);
     border-width: calc(1px / var(--scale));
     border-style: solid;
+    visibility: visible;
+}
+
+.floating-box > textarea {
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    border: none;
+    background-color: rgba(0,0,0,0);
+    resize: none;
+}
+
+.floating-box > textarea:active {
+    outline: none;
+}
+
+.floating-box > textarea:focus {
+    outline: none;
 }
 
 /* Merged from codeanywhere */
@@ -106,4 +133,8 @@ html, body {
 
 .non-select {
     -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none; -o-user-select:none;
+}
+
+.select {
+    -moz-user-select: text; -webkit-user-select: text; -ms-user-select:text; user-select:text; -o-user-select:text;
 }
