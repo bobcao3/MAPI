@@ -93,6 +93,9 @@ let graph = new Vue({
             let buffer = dcodeIO.ByteBuffer.fromBinary(LZUTF8.decompress(data, { inputEncoding: "Base64", outputEncoding: "String" }));
             let decoded = pson.decode(buffer);
             this.boxes = decoded;
+
+            let saveField = document.getElementById("load-work");
+            UIkit.offcanvas(saveField).hide();
         },
         saveWork: function(event) {
             this.saveFileStatus = "";

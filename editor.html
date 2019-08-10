@@ -93,12 +93,12 @@
             <!-- Navigation bar -->
             <!-- Saved works panel -->
             <div id="load-work" uk-offcanvas="overlay: true; mode: push">
-                <div class="uk-offcanvas-bar">
+                <div class="uk-offcanvas-bar uk-width-1-3">
                     <button class="uk-offcanvas-close" type="button" uk-close></button>
-                    <fieldset class="uk-padding-large uk-padding-remove-horizontal uk-fieldset">
+                    <div class="uk-padding-small uk-padding-remove-horizontal">
                         <textarea class="uk-textarea uk-width-1-1" rows="7" v-model="loadData" placeholder="Paste the save file here"></textarea>
-                        <button class="uk-button uk-button-danger" v-on:click="loadWork(loadData)">Load</button>
-                    </fieldset>
+                        <button class="uk-button uk-button-danger uk-width-1-1" v-on:click="loadWork(loadData)">Load</button>
+                    </div>
                 </div>
             </div>
             <div id="save-work" uk-offcanvas="overlay: true; mode: slide; flip: true" v-on:shown="savePanelShown">
