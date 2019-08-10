@@ -10,9 +10,13 @@ let draggingEvent = {
 let zoomLevel = 1.0;
 let wheelDelta = 1.05;
 
+let PSON = dcodeIO.PSON;
+let initialDictionary = ["id","anchor","size","color","rgba(","#",")","-"];
+let pson = new PSON.ProgressivePair(initialDictionary);
+
 function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return 'xxxx-xxxx-xxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
@@ -84,6 +88,31 @@ let graph = new Vue({
             }
             // Now insert this new box into the data
             this.boxes.push(newBox);
+        },
+        loadWork: function(data) {
+            let buffer = dcodeIO.ByteBuffer.fromBinary(LZUTF8.decompress(data, { inputEncoding: "Base64", outputEncoding: "String" }));
+            let decoded = pson.decode(buffer);
+            this.boxes = decoded;
+        },
+        saveWork: function(event) {
+            this.saveFileStatus = "";
+            let buffer = pson.encode(this.boxes).compact();
+            let lzdata = LZUTF8.compress(buffer.toBinary(), { outputEncoding: "Base64" });
+            this.savedData = lzdata;
+        },
+        savePanelShown: function(event) {
+            let saveField = document.getElementById("save-work-field");
+            saveField.select();
+            try {
+                var successful = document.execCommand('copy');
+                if (successful) {
+                    this.saveFileStatus = "The save file is copied to your clipboard.";
+                } else {
+                    this.saveFileStatus = "Unable to copy to clipboard. Please copy the save data manually.";
+                }
+            } catch (err) {
+                this.saveFileStatus = "Unable to copy to clipboard. Please copy the save data manually.";
+            }
         }
     },
     data: {
@@ -91,7 +120,10 @@ let graph = new Vue({
         ],
         editingState: {
             selected: undefined
-        }
+        },
+        savedData: "",
+        loadData: "",
+        saveFileStatus: ""
     }
 })
 
@@ -149,13 +181,15 @@ graph_canvas.onpointerup = pointerup
 graph_canvas.onpointerleave = pointerup;
 
 window.addEventListener("wheel", event => {
-    let delta = event.deltaY;
-    if (delta > 0) {
-        zoomLevel /= wheelDelta;
-    } else {
-        zoomLevel *= wheelDelta;
+    if (event.target == graph_canvas) {
+        let delta = event.deltaY;
+        if (delta > 0) {
+            zoomLevel /= wheelDelta;
+        } else {
+            zoomLevel *= wheelDelta;
+        }
+        graph_canvas.style.setProperty('--scale', zoomLevel);    
     }
-    graph_canvas.style.setProperty('--scale', zoomLevel);
 });
 
 // click the reactangle to make cell
