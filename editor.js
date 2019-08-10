@@ -7,6 +7,18 @@ let draggingEvent = {
     boxStartY: undefined,
 }
 
+let resizingEvent = {
+    mouseDown: false,
+    dataElement: undefined,
+    mouseStartX: undefined,
+    mouseStartY: undefined,
+    boxStartX: undefined,
+    boxStartY: undefined,
+    boxStartSizeX: undefined,
+    boxStartSizeY: undefined,
+    resizeType: undefined
+}
+
 let zoomLevel = 1.0;
 let wheelDelta = 1.05;
 
@@ -34,6 +46,17 @@ Vue.component('box', {
 
             
             this.editingState.selected = this.boxdata;
+        },
+        onresizeStart: function(event) {
+            resizingEvent.mouseStartX = event.x;
+            resizingEvent.mouseStartY = event.y;
+            resizingEvent.boxStartX = this.boxdata.anchor.x;
+            resizingEvent.boxStartY = this.boxdata.anchor.y;
+            resizingEvent.boxStartSizeX = this.boxdata.size.x;
+            resizingEvent.boxStartSizeY = this.boxdata.size.y;
+            resizingEvent.dataElement = this.boxdata;
+            resizingEvent.mouseDown = true;
+            resizingEvent.resizeType = event.target.getAttribute("resize-type");
         }
     },
     computed: {
@@ -43,17 +66,25 @@ Vue.component('box', {
     },
     template: `
         <div
-            class="uk-card uk-card-body uk-card-primary floating-box non-select"
+            class="uk-card floating-box non-select"
             v-on:pointerdown="ondragstart"
             v-bind:class="{ selected: isSelected }"
             v-bind:style="{
                 transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0)',
                 width: boxdata.size.x + 'px',
                 height: boxdata.size.y + 'px',
-                backgroundColor: boxdata.color
+                backgroundColor: boxdata.color,
+                textColor: boxdata.textColor
             }">
 
             DADA
+
+            <div class="frame" v-if="isSelected">
+            <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
+            <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
+            <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
+            <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
+            </div>
         </div>
     `
 })
@@ -84,7 +115,8 @@ let graph = new Vue({
                     y: 100 + Math.random() * 100  // Random position as example
                 },
                 // The color of the new box
-                color: "rgba(255,128,128)" // can also be "#ff8080" or other things
+                color: "rgba(255,128,128)", // can also be "#ff8080" or other things
+                textColor: "#0c0c0c"
             }
             // Now insert this new box into the data
             this.boxes.push(newBox);
@@ -149,16 +181,59 @@ graph_canvas.onpointerdown = function(event) {
     }
 }
 
+function handleCanvasDrag(event, setSize = false) {
+    let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
+    let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
+    graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
+    graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
+    if (setSize) {
+        canvasDragginEvent.elementStartX = x;
+        canvasDragginEvent.elementStartY = y;
+    }
+}
+
+function handleResize(event) {
+    let dx = (event.x - resizingEvent.mouseStartX) / zoomLevel;
+    let dy = (event.y - resizingEvent.mouseStartY) / zoomLevel;
+    let x = resizingEvent.boxStartX;
+    let y = resizingEvent.boxStartY;
+    let xs = resizingEvent.boxStartSizeX;
+    let ys = resizingEvent.boxStartSizeY;
+    if (resizingEvent.resizeType == "topleft") {
+        xs -= dx;
+        ys -= dy;
+        x += dx;
+        y += dy;
+    } else if (resizingEvent.resizeType == "topright") {
+        xs += dx;
+        ys -= dy;
+        y += dy;
+    } else if (resizingEvent.resizeType == "bottomleft") {
+        x += dx;
+        xs -= dx;
+        ys += dy;
+    } else if (resizingEvent.resizeType == "bottomright") {
+        xs += dx;
+        ys += dy;
+    }
+    if (xs < 10) xs = 10;
+    if (ys < 10) ys = 10;
+    resizingEvent.dataElement.anchor.x = x;
+    resizingEvent.dataElement.anchor.y = y;
+    resizingEvent.dataElement.size.x = xs;
+    resizingEvent.dataElement.size.y = ys;
+}
+
 graph_canvas.onpointermove = function(event) {
     if (draggingEvent.mouseDown) {
         draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + (event.x - draggingEvent.mouseStartX) / zoomLevel;
         draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + (event.y - draggingEvent.mouseStartY) / zoomLevel;
     }
     if (canvasDragginEvent.mouseDown) {
-        let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
-        let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
-        graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
-        graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
+        handleCanvasDrag(event);
+    }
+    if (resizingEvent.mouseDown) {
+        handleResize(event);
     }
 };
 
@@ -167,16 +242,14 @@ function pointerup(event) {
         draggingEvent.dataElement.anchor.x = draggingEvent.boxStartX + (event.x - draggingEvent.mouseStartX) / zoomLevel;
         draggingEvent.dataElement.anchor.y = draggingEvent.boxStartY + (event.y - draggingEvent.mouseStartY) / zoomLevel;
         draggingEvent.mouseDown = false;
-        draggingEvent.dataElement = undefined;
     }
     if (canvasDragginEvent.mouseDown) {
-        let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
-        let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
-        graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
-        graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
-        canvasDragginEvent.elementStartX = x;
-        canvasDragginEvent.elementStartY = y;
+        handleCanvasDrag(event, true);
         canvasDragginEvent.mouseDown = false;
+    }
+    if (resizingEvent.mouseDown) {
+        handleResize(event);
+        resizingEvent.mouseDown = false;
     }
 }
 

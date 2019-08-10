@@ -40,11 +40,33 @@ html, body {
     position: absolute;
     transition: box-shadow 0.3s ease;
     transition: outline-color 0.3s ease;
+    min-width: 10px;
+    min-height: 10px;
 }
 
 .floating-box.selected {
     box-shadow: 0em 0.0em 1.5em rgb(82, 206, 255);
-    outline: 2px dashed rgb(0, 187, 255);
+    outline-color: rgb(0, 187, 255);
+    outline-style: dashed;
+    outline-width: calc(2px / var(--scale));
+}
+
+.floating-box .frame {
+    position: absolute;
+    left: calc(-8px / var(--scale));
+    top: calc(-8px / var(--scale));
+    width: calc(100% + 16px / var(--scale));
+    height: calc(100% + 16px / var(--scale));
+}
+
+.floating-box .frame .handle {
+    height: calc(12px / var(--scale));
+    width: calc(12px / var(--scale));
+    border-radius: 50%;
+    background-color: rgb(82, 206, 255);
+    border-color: rgb(0, 187, 255);
+    border-width: calc(1px / var(--scale));
+    border-style: solid;
 }
 
 /* Merged from codeanywhere */
