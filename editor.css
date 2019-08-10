@@ -18,7 +18,8 @@ html, body {
 
 #graph-canvas {
     display: block;
-    transform: translate(var(--bg-offset-x), var(--bg-offset-y)) scale(var(--scale));
+    transform: perspective(1px) translate3d(var(--bg-offset-x), var(--bg-offset-y), 0) scale(var(--scale));
+    backface-visibility: hidden;
 }
 
 #graph-canvas-background:before {
@@ -43,6 +44,8 @@ html, body {
     min-width: 10px;
     min-height: 10px;
     padding: 5px;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .floating-box.selected {
@@ -86,6 +89,9 @@ html, body {
     border: none;
     background-color: rgba(0,0,0,0);
     resize: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: subpixel-antialiased;
 }
 
 .floating-box > textarea:active {

@@ -43,13 +43,15 @@ Vue.component('box', {
             if (this.editingState.selected != this.boxdata) {
                 this.editingState.selected = this.boxdata;
                 this.editingState.selectedText = false;
+            }
     
+            if (!this.editingState.selectedText) {
                 draggingEvent.mouseStartX = event.x;
                 draggingEvent.mouseStartY = event.y;
                 draggingEvent.boxStartX = this.boxdata.anchor.x;
                 draggingEvent.boxStartY = this.boxdata.anchor.y;
                 draggingEvent.dataElement = this.boxdata;
-                draggingEvent.mouseDown = true;
+                draggingEvent.mouseDown = true;    
             }
         },
         onresizeStart: function(event) {
@@ -82,7 +84,7 @@ Vue.component('box', {
             v-on:dblclick="ondblclick"
             v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected }"
             v-bind:style="{
-                transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0)',
+                transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0.0)',
                 width: boxdata.size.x + 'px',
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
@@ -90,10 +92,10 @@ Vue.component('box', {
             }">
 
             <textarea
-                v-bind:class="{ select: isTextSelected }"
+                v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
                 v-bind:readonly="!isTextSelected"
                 v-model="boxdata.text"
-                v-bind:style="{ fontFamily: boxdata.font, fontSize: boxdata.fontSize }"
+                v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px' }"
             ></textarea>
 
             <div class="frame" v-if="isSelected && !isTextSelected">
@@ -119,7 +121,7 @@ let graph = new Vue({
             // Randomly select a font for this
             let font = Math.random() > 0.5 ? "Roboto" : "serif";
             // Randomly select a font size
-            let fontSize = 8.0 + Math.round(Math.random() * 8.0) + "pt";
+            let fontSize = 16.0 + Math.round(Math.random() * 16.0);
             // This defines the new box data
             let newBox = {
                 // Generate a random unique id for this new box (don't modify this)
@@ -221,10 +223,10 @@ function handleDrag(event) {
     let dx = (event.x - draggingEvent.mouseStartX) / zoomLevel;
     let dy = (event.y - draggingEvent.mouseStartY) / zoomLevel;
     if (proportional) {
-        if (Math.abs(x) > Math.abs(y)) {
-            y = 0;
+        if (Math.abs(dx) > Math.abs(dy)) {
+            dy = 0;
         } else {
-            x = 0;
+            dx = 0;
         }
     }
     let x = dx + draggingEvent.boxStartX;
