@@ -103,7 +103,7 @@ html, body {
 }
 
 /* Merged from codeanywhere */
-#navBar {
+ .uk-navbar-container.non-select {
     background-color: #78909C;
     box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.1);
 }
