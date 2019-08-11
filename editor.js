@@ -1,4 +1,3 @@
-
 let draggingEvent = {
     mouseDown: false,
     dataElement: undefined,
@@ -67,7 +66,6 @@ Vue.component('box', {
             resizingEvent.resizeType = event.target.getAttribute("resize-type");
         },
         ondblclick: function(event) {
-
             graph.editingState.selectedText = true;
         }
     },
@@ -81,7 +79,7 @@ Vue.component('box', {
     },
     template: `
         <div
-            class="uk-card floating-box non-select "
+            class="uk-card floating-box non-select"
             v-on:pointerdown="ondragstart"
             v-on:dblclick="ondblclick"
             v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected }"
@@ -92,22 +90,18 @@ Vue.component('box', {
                 backgroundColor: boxdata.color,
                 textColor: boxdata.textColor
             }">
-
             <textarea
                 v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
                 v-bind:readonly="!isTextSelected"
                 v-model="boxdata.text"
                 v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px' }"
             ></textarea>
-
             <div class="frame" v-if="isSelected && !isTextSelected">
                 <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
                 <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
                 <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
                 <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
             </div>
-
-
         </div>
     `
 })
@@ -144,12 +138,10 @@ let graph = new Vue({
                 // The color of the new box
                 color: "rgba(255,128,128)", // can also be "#ff8080" or other things
                 textColor: "#0c0c0c", // Color of text
-                text: "Click to edit text", // the text content
+                text: "New Box", // the text content
                 font: font, // Font of the text
                 fontSize: fontSize // Font size of text
-
             }
-
             // Now insert this new box into the data
             this.boxes.push(newBox);
         },
@@ -366,6 +358,10 @@ window.addEventListener("keyup", event => {
 // click the reactangle to make cell
 function clickRect(){
     let element = document.getElementById("rect");
+   // let c = document.getElementById("circle");
+   // let t = document.getElementById("tri");
+//     element.classList.toggle("clickedStyle");
+
     element.style.color = "#FF80AB";
    // c.style.color = "white";
    // t.style.color = "white";
