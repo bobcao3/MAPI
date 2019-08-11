@@ -10,6 +10,28 @@
         <!-- UIkit CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.7/css/uikit.min.css" />
 
+
+        <!--html editor-->
+       <link rel="stylesheet" href="css/uikit.min.css" />
+       <link href = "css/uikit.gradient.min.css">
+       <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+       <!-- <script src="js/uikit.min.js"></script> -->
+
+
+       <!-- Codemirror and marked dependencies -->
+       <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+       <script src="codemirror/lib/codemirror.js"></script>
+       <script src="codemirror/mode/markdown/markdown.js"></script>
+       <script src="codemirror/addon/mode/overlay.js"></script>
+       <script src="codemirror/mode/xml/xml.js"></script>
+       <script src="codemirror/mode/gfm/gfm.js"></script>
+       <script src="marked.js"></script>
+
+       <!-- HTML editor CSS and JavaScript -->
+       <link href="css/components/htmleditor.min.css" rel = "stylesheet">
+       <link href="css/components/htmleditor.gradient.min.css" rel = "stylesheet">
+       <script src="js/components/htmleditor.min.js"></script>
+
         <!-- UIkit JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.7/js/uikit.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.7/js/uikit-icons.min.js"></script>
@@ -64,12 +86,12 @@
                         <!-- To bind a callback to an event, use v-on:event="callback" -->
                         <li><i class="material-icons" v-on:click="createBox">title</i></li>
                         <li><i class="material-icons">filter</i></li>
-    
+
                         <li>
                             <i class="material-icons">filter_1</i>
                             <!--This is the UIkit dropdown  -->
                             <div id="colorbar" class="uk-navbar-dropdown color-pallete">
-                                <p>Stickers</p>
+                                <p>Change Cell Color</p>
                                 <div>
                                     <button class="uk-button color-button" style="background-color: #FF8080;" v-on:click="changeColor"></button>
                                     <button class="uk-button color-button" style="background-color: #FFC580;" v-on:click="changeColor"></button>
@@ -113,6 +135,7 @@
             <!-- Saved works panel -->
         </div>
 
-        <script src="editor.js"></script>
+      <!-- <script src="editor.js"></script> -->
+
     </body>
 </html>

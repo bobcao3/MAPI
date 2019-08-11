@@ -1,3 +1,4 @@
+
 let draggingEvent = {
     mouseDown: false,
     dataElement: undefined,
@@ -44,14 +45,14 @@ Vue.component('box', {
                 this.editingState.selected = this.boxdata;
                 this.editingState.selectedText = false;
             }
-    
+
             if (!this.editingState.selectedText) {
                 draggingEvent.mouseStartX = event.x;
                 draggingEvent.mouseStartY = event.y;
                 draggingEvent.boxStartX = this.boxdata.anchor.x;
                 draggingEvent.boxStartY = this.boxdata.anchor.y;
                 draggingEvent.dataElement = this.boxdata;
-                draggingEvent.mouseDown = true;    
+                draggingEvent.mouseDown = true;
             }
         },
         onresizeStart: function(event) {
@@ -66,6 +67,7 @@ Vue.component('box', {
             resizingEvent.resizeType = event.target.getAttribute("resize-type");
         },
         ondblclick: function(event) {
+
             graph.editingState.selectedText = true;
         }
     },
@@ -79,7 +81,7 @@ Vue.component('box', {
     },
     template: `
         <div
-            class="uk-card floating-box non-select"
+            class="uk-card floating-box non-select "
             v-on:pointerdown="ondragstart"
             v-on:dblclick="ondblclick"
             v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected }"
@@ -104,6 +106,8 @@ Vue.component('box', {
                 <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
                 <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
             </div>
+
+
         </div>
     `
 })
@@ -140,10 +144,12 @@ let graph = new Vue({
                 // The color of the new box
                 color: "rgba(255,128,128)", // can also be "#ff8080" or other things
                 textColor: "#0c0c0c", // Color of text
-                text: "New Box", // the text content
+                text: "Click to edit text", // the text content
                 font: font, // Font of the text
                 fontSize: fontSize // Font size of text
+
             }
+
             // Now insert this new box into the data
             this.boxes.push(newBox);
         },
@@ -335,7 +341,7 @@ window.addEventListener("wheel", event => {
         } else {
             zoomLevel *= wheelDelta;
         }
-        graph_canvas.style.setProperty('--scale', zoomLevel);    
+        graph_canvas.style.setProperty('--scale', zoomLevel);
     }
 });
 
@@ -360,10 +366,6 @@ window.addEventListener("keyup", event => {
 // click the reactangle to make cell
 function clickRect(){
     let element = document.getElementById("rect");
-   // let c = document.getElementById("circle");
-   // let t = document.getElementById("tri");
-//     element.classList.toggle("clickedStyle");
-
     element.style.color = "#FF80AB";
    // c.style.color = "white";
    // t.style.color = "white";
