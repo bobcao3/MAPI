@@ -79,6 +79,7 @@ Vue.component('box', {
     },
     template: `
         <div
+
             class="uk-card floating-box non-select"
             v-on:pointerdown="ondragstart"
             v-on:dblclick="ondblclick"
@@ -90,12 +91,10 @@ Vue.component('box', {
                 backgroundColor: boxdata.color,
                 textColor: boxdata.textColor
             }">
-            <textarea
-                v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
-                v-bind:readonly="!isTextSelected"
-                v-model="boxdata.text"
-                v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px' }"
-            ></textarea>
+
+              <textarea data-uk-htmleditor="{mode:'tab'}"></textarea>
+
+
             <div class="frame" v-if="isSelected && !isTextSelected">
                 <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
                 <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
