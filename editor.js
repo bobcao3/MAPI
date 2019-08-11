@@ -92,51 +92,46 @@ Vue.component('box', {
                 textColor: boxdata.textColor
             }">
             <textarea
-                 v-bind:class="{ select: isTextSelected }"
                  v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
                  v-bind:readonly="!isTextSelected"
                  v-model="boxdata.text"
-                 v-bind:style="{ fontFamily: boxdata.font, fontSize: boxdata.fontSize }"
                  v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px' }"
              ></textarea>
 
-            <div class="uk-width-large" uk-drop>
+            <div class="uk-card uk-card-default" v-if="isTextSelected">
                 <nav class="uk-navbar-container" uk-navbar style=" background-color: rgba(0, 0, 255, 0)	">
-                     <div class="uk-navbar-left">
+                    <div class="uk-navbar-left">
 
-                         <ul class="uk-navbar-nav">
-                             <li>
-                                 <a href="#" onclick="boldfunc(id)" style="font-style:italic">Italic</a>
-                             </li>
-                             <li>
-                                 <a href="#">Font</a>
-                                 <div class="uk-navbar-dropdown">
-                                     <ul class="uk-nav uk-navbar-dropdown-nav">
-                                         <li ><a href="#" style = "font-family:Roboto">Roboto</a></li>
-                                         <li ><a href="#" style = "font-family: serif">serif</a></li>
-                                         <li ><a href="#" style="font-family: Times New Roman">Times New Roman</a></li>
-                                     </ul>
-                                 </div>
-                             </li>
+                        <ul class="uk-navbar-nav">
+                            <li>
+                                <a href="#" onclick="boldfunc(id)" style="font-style:italic">Italic</a>
+                            </li>
+                            <li>
+                                <a href="#">Font</a>
+                                <div class="uk-navbar-dropdown">
+                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                                        <li ><a href="#" style = "font-family:Roboto">Roboto</a></li>
+                                        <li ><a href="#" style = "font-family: serif">serif</a></li>
+                                        <li ><a href="#" style="font-family: Times New Roman">Times New Roman</a></li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                             <li>
-                                 <a href="#">Size</a>
-                                 <div class="uk-navbar-dropdown">
-                                     <ul class="uk-nav uk-navbar-dropdown-nav">
-                                         <li class="uk-active"><a href="#" style="fontSize:26px">Head 1</a></li>
-                                         <li><a href="#"  style="fontSize:20px">Head 2</a></li>
-                                         <li><a href="#" style="fontSize:11px">Normal text</a></li>
-                                     </ul>
-                                 </div>
-                             </li>
-                         </ul>
+                            <li>
+                                <a href="#">Size</a>
+                                <div class="uk-navbar-dropdown">
+                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                                        <li class="uk-active"><a href="#" style="fontSize:26px">Head 1</a></li>
+                                        <li><a href="#"  style="fontSize:20px">Head 2</a></li>
+                                        <li><a href="#" style="fontSize:11px">Normal text</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
 
-                     </div>
-                 </nav>
-
+                    </div>
+                </nav>
             </div>
-
-
 
             <div class="frame" v-if="isSelected && !isTextSelected">
                 <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
