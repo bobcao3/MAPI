@@ -46,6 +46,20 @@ function testSelectedCascaded(current, selected) {
     return false;
 }
 
+function deleteFrom(children, child) {
+    if (child) {
+        console.log("Deleting ", child, " from ", children)
+        for (ind in children) {
+            let box = children[ind];
+            if (box == child) {
+                children.splice(ind, 1);
+                return;
+            }
+            deleteFrom(box.children, child);
+        }
+    }
+}
+
 Vue.component('box', {
     props: ['boxdata', 'editing-state'],
     methods: {
@@ -136,6 +150,11 @@ let graph = new Vue({
             if (this.editingState.selected) {
                 this.editingState.selected.color = event.target.style.backgroundColor;
             }
+        },
+        deleteSelected: function() {
+            deleteFrom(this.boxes, this.editingState.selected);
+            this.editingState.selected = undefined;
+            this.editingState.isTextSelected = false;
         },
         // This is the callback on the button
         createBox: function(event) {

@@ -71,6 +71,12 @@
                         <li>
                             <i
                                 class="material-icons"
+                                v-on:click="deleteSelected"
+                            >delete_outline</i>
+                        </li>
+                        <li>
+                            <i
+                                class="material-icons"
                                 v-bind:class="{ toggled : editingState.selected.bold }"
                                 v-on:click="editingState.selected.bold = !editingState.selected.bold"
                             >format_bold</i>
