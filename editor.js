@@ -59,6 +59,7 @@ function deleteFrom(children, child) {
     }
 }
 
+
 Vue.component('box', {
     props: ['boxdata', 'editing-state'],
     methods: {
@@ -90,6 +91,24 @@ Vue.component('box', {
         },
         ondblclick: function(event) {
             graph.editingState.selectedText = true;
+        },
+        ColorLuminance: function(hex, lum) {
+            // validate hex string
+            hex = String(hex).replace(/[^0-9a-f]/gi, '');
+            if (hex.length < 6) {
+                hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+            }
+            lum = lum || 0;
+
+            // convert to decimal and change luminosity
+            var rgb = "#", c, i;
+            for (i = 0; i < 3; i++) {
+                c = parseInt(hex.substr(i*2,2), 16);
+                c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+                rgb += ("00"+c).substr(c.length);
+            }
+
+            return rgb;
         }
     },
     computed: {
@@ -115,7 +134,8 @@ Vue.component('box', {
                 width: boxdata.size.x + 'px',
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
-                textColor: boxdata.textColor,
+                borderColor: ColorLuminance(boxdata.color, 0.4),
+                color: boxdata.textColor,
                 overflow: isSelectedCascaded ? 'visible' : 'hidden'
             }">
             <textarea
@@ -173,7 +193,7 @@ let graph = new Vue({
                     y: 100 + Math.random() * 100  // Random position as example
                 },
                 // The color of the new box
-                color: "rgba(255,128,128)", // can also be "#ff8080" or other things
+                color: "#FF8080", // must be in hex
                 textColor: "#0c0c0c", // Color of text
                 text: "New Box", // the text content
                 font: this.fontOptions[0].value, // Default to Roboto
@@ -251,7 +271,6 @@ let graph = new Vue({
 
 document.addEventListener('mousedown', function (event) {
     if (event.detail > 1 && !graph.editingState.selectedText) {
-        console.log(graph.editingState.selectedText)
         event.preventDefault();
     }
 }, false);
