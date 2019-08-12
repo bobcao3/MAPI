@@ -36,6 +36,30 @@ function uuidv4() {
     });
 }
 
+function testSelectedCascaded(current, selected) {
+    if (selected && selected == current) return true;
+    for (ind in current.children) {
+        let box = current.children[ind];
+        let result = testSelectedCascaded(box, selected);
+        if (result) return true;
+    }
+    return false;
+}
+
+function deleteFrom(children, child) {
+    if (child) {
+        console.log("Deleting ", child, " from ", children)
+        for (ind in children) {
+            let box = children[ind];
+            if (box == child) {
+                children.splice(ind, 1);
+                return;
+            }
+            deleteFrom(box.children, child);
+        }
+    }
+}
+
 Vue.component('box', {
     props: ['boxdata', 'editing-state'],
     methods: {
@@ -65,9 +89,6 @@ Vue.component('box', {
             resizingEvent.mouseDown = true;
             resizingEvent.resizeType = event.target.getAttribute("resize-type");
         },
-        changeTextSize: function(event){
-
-        },
         ondblclick: function(event) {
             graph.editingState.selectedText = true;
         }
@@ -78,68 +99,32 @@ Vue.component('box', {
         },
         isTextSelected: (i) => {
             return i.editingState.selected && i.editingState.selected == i.boxdata && i.editingState.selectedText;
+        },
+        isSelectedCascaded: (i) => {
+            return testSelectedCascaded(i.boxdata, i.editingState.selected);
         }
     },
     template: `
         <div
 
-            class="uk-card floating-box non-select"
-            v-on:pointerdown="ondragstart"
-            v-on:dblclick="ondblclick"
-            v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected }"
+            class="uk-card floating-box"
+            v-on:pointerdown.stop="ondragstart"
+            v-on:dblclick.stop="ondblclick"
+            v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected, cascaded: !isSelected && isSelectedCascaded }"
             v-bind:style="{
                 transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0.0)',
                 width: boxdata.size.x + 'px',
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
-                textColor: boxdata.textColor
+                textColor: boxdata.textColor,
+                overflow: isSelectedCascaded ? 'visible' : 'hidden'
             }">
             <textarea
-                 v-bind:class="{ select: isTextSelected }"
                  v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
                  v-bind:readonly="!isTextSelected"
                  v-model="boxdata.text"
-                 v-bind:style="{ fontFamily: boxdata.font, fontSize: boxdata.fontSize }"
-                 v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px' }"
-             ></textarea>
-
-            <div class="uk-width-large" uk-drop>
-                <nav class="uk-navbar-container" uk-navbar style=" background-color: rgba(0, 0, 255, 0)	">
-                     <div class="uk-navbar-left">
-
-                         <ul class="uk-navbar-nav">
-                             <li>
-                                 <a href="#" onclick="boldfunc(id)" style="font-style:italic">Italic</a>
-                             </li>
-                             <li>
-                                 <a href="#">Font</a>
-                                 <div class="uk-navbar-dropdown">
-                                     <ul class="uk-nav uk-navbar-dropdown-nav">
-                                         <li ><a href="#" style = "font-family:Roboto">Roboto</a></li>
-                                         <li ><a href="#" style = "font-family: serif">serif</a></li>
-                                         <li ><a href="#" style="font-family: Times New Roman">Times New Roman</a></li>
-                                     </ul>
-                                 </div>
-                             </li>
-
-                             <li>
-                                 <a href="#">Size</a>
-                                 <div class="uk-navbar-dropdown">
-                                     <ul class="uk-nav uk-navbar-dropdown-nav">
-                                         <li ><a id ="head1" href="#" style="fontSize:26px"">Head 1</a></li>
-                                         <li><a href="#"  style="fontSize:20px">Head 2</a></li>
-                                         <li><a href="#" style="fontSize:11px">Normal text</a></li>
-                                     </ul>
-                                 </div>
-                             </li>
-                         </ul>
-
-                     </div>
-                 </nav>
-
-            </div>
-
-
+                 v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px', fontStyle: boxdata.italic ? 'italic' : 'normal', fontWeight: boxdata.bold ? 'bold' : 'normal' }"
+            ></textarea>
 
             <div class="frame" v-if="isSelected && !isTextSelected">
                 <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
@@ -147,19 +132,17 @@ Vue.component('box', {
                 <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
                 <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
             </div>
+
+            <box
+                v-for="box in boxdata.children"
+                v-bind:key="box.id"
+                v-bind:boxdata="box"
+                v-bind:editing-state="editingState"
+            />
         </div>
     `
 })
 
-
-  let head1 = new Vue({
-  el: '#head1',
-  methods: {
-    say: function (message) {
-      alert(message)
-    }
-  }
-})
 let graph = new Vue({
     el: '#app',
     methods: {
@@ -168,13 +151,13 @@ let graph = new Vue({
                 this.editingState.selected.color = event.target.style.backgroundColor;
             }
         },
-
+        deleteSelected: function() {
+            deleteFrom(this.boxes, this.editingState.selected);
+            this.editingState.selected = undefined;
+            this.editingState.textSelected = false;
+        },
         // This is the callback on the button
         createBox: function(event) {
-            // Randomly select a font for this
-            let font = Math.random() > 0.5 ? "Roboto" : "serif";
-            // Randomly select a font size
-            let fontSize = 16.0 + Math.round(Math.random() * 16.0);
             // This defines the new box data
             let newBox = {
                 // Generate a random unique id for this new box (don't modify this)
@@ -194,11 +177,20 @@ let graph = new Vue({
                 color: "rgba(255,128,128)", // can also be "#ff8080" or other things
                 textColor: "#0c0c0c", // Color of text
                 text: "New Box", // the text content
-                font: font, // Font of the text
-                fontSize: fontSize // Font size of text
+                font: this.fontOptions[0].value, // Default to Roboto
+                fontSize: this.textSizeOptions[0].value,
+                italic: false,
+                bold: false,
+                children: [] // Default to no children
             }
             // Now insert this new box into the data
-            this.boxes.push(newBox);
+            if (this.editingState.selected) {
+                // This is a sub-box
+                this.editingState.selected.children.push(newBox);
+            } else {
+                // This is a top level box
+                this.boxes.push(newBox);
+            }
         },
         loadWork: function(data) {
             let buffer = dcodeIO.ByteBuffer.fromBinary(LZUTF8.decompress(data, { inputEncoding: "Base64", outputEncoding: "String" }));
@@ -238,9 +230,26 @@ let graph = new Vue({
         },
         savedData: "",
         loadData: "",
-        saveFileStatus: ""
+        saveFileStatus: "",
+        // These values are in pixels
+        textSizeOptions: [
+            { text: 'Main text', value: '16' },
+            { text: 'Head 1', value: '32' },
+            { text: 'Head 2', value: '24' },
+        ],
+        fontOptions: [
+            { text: 'Roboto', value: "'Roboto', sans-serif" },
+            { text: 'Georgia', value: "'Georgia', serif" }
+        ]
     }
 })
+
+document.addEventListener('mousedown', function (event) {
+    if (event.detail > 1 && !graph.editingState.selectedText) {
+        console.log(graph.editingState.selectedText)
+        event.preventDefault();
+    }
+}, false);
 
 graph_canvas = document.getElementById("graph-canvas-background");
 
@@ -421,3 +430,10 @@ function clickRect(){
    // c.style.color = "white";
    // t.style.color = "white";
 }
+
+function clickStticker(){
+
+}
+function boldfunc(id){
+  alert(id);
+  }

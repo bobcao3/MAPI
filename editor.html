@@ -9,30 +9,6 @@
 
         <!-- UIkit CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.7/css/uikit.min.css" />
-        <!--html editor-->
-         <!-- <link href="css/uikit.min.css" rel="stylesheet"/> -->
-         <!-- <link href = "css/uikit.gradient.min.css" rel="stylesheet">  -->
-         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-         <script src="js/uikit.min.js"></script>
-
-         <!-- Codemirror and marked dependencies -->
-         <link rel="stylesheet" href="codemirror/lib/codemirror.css">
-         <script src="codemirror/lib/codemirror.js"></script>
-         <script src="codemirror/mode/markdown/markdown.js"></script>
-         <script src="codemirror/addon/mode/overlay.js"></script>
-         <script src="codemirror/mode/xml/xml.js"></script>
-         <script src="codemirror/mode/gfm/gfm.js"></script>
-         <script src="marked/marked.min.js"></script>
-         <!-- HTML editor CSS and JavaScript -->
-         <link href="css/htmleditor.min.css" rel = "stylesheet"/>
-         <link href="css/htmleditor.gradient.min.css" rel = "stylesheet"/>
-         <script src="js/htmleditor.min.js"></script>
-
-
-
-
-
-
         <!-- UIkit JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.7/js/uikit.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.7/js/uikit-icons.min.js"></script>
@@ -75,25 +51,61 @@
             </div>
             <!-- Navigation bar -->
             <nav class="uk-navbar-container non-select" id="navBar" uk-navbar>
-                <div class="uk-navbar-left uk-padding-small">
+                <div class="uk-navbar-left">
                     <ul class="uk-navbar-nav">
                         <li><i class="material-icons" uk-toggle="target: #load-work">folder_open</i></li>
                     </ul>
                 </div>
-                <div class="uk-navbar-center uk-padding-small">
-                    <ul class="uk-navbar-nav">
-                        <li onclick="clickRect()"><i class="material-icons" id="rect">crop_5_4</i></li>
+                <div class="uk-navbar-center">
+                    <ul class="uk-navbar-nav uk-flex uk-flex-center">
                         <li><i class="material-icons">undo</i></li>
                         <li><i class="material-icons">redo</i></li>
                         <!-- To bind a callback to an event, use v-on:event="callback" -->
-                        <li><i class="material-icons" v-on:click="createBox">title</i></li>
-                        <li><i class="material-icons">filter</i></li>
-
+                        <li><i class="material-icons" v-on:click="createBox">crop_5_4</i></li>
+                        <li><i class="material-icons">photo_library</i></li>
+                    </ul>
+                </div>
+                <div class="uk-navbar-right">
+                    <ul class="uk-navbar-nav" v-if="editingState.selected">
+                        <!-- Editing options -->
                         <li>
-                            <i class="material-icons">filter_1</i>
+                            <i
+                                class="material-icons"
+                                v-on:click="deleteSelected"
+                            >delete_outline</i>
+                        </li>
+                        <li>
+                            <i
+                                class="material-icons"
+                                v-bind:class="{ toggled : editingState.selected.bold }"
+                                v-on:click="editingState.selected.bold = !editingState.selected.bold"
+                            >format_bold</i>
+                        </li>
+                        <li>
+                            <i
+                                class="material-icons"
+                                v-bind:class="{ toggled : editingState.selected.italic }"
+                                v-on:click="editingState.selected.italic = !editingState.selected.italic"
+                            >format_italic</i>
+                        </li>
+                        <li>
+                            <select class="uk-select navbar-selections" v-model="editingState.selected.font">
+                                <option v-for="option in fontOptions" v-bind:value="option.value">
+                                    {{ option.text }}
+                                </option>
+                            </select>
+                        </li>
+                        <li>
+                            <select class="uk-select navbar-selections" v-model="editingState.selected.fontSize">
+                                <option v-for="option in textSizeOptions" v-bind:value="option.value">
+                                    {{ option.text }}
+                                </option>
+                            </select>
+                        </li>
+                        <li>
+                            <i class="material-icons">format_color_fill_24px</i>
                             <!--This is the UIkit dropdown  -->
                             <div id="colorbar" class="uk-navbar-dropdown color-pallete">
-                                <p>Stickers</p>
                                 <div>
                                     <button class="uk-button color-button" style="background-color: #FF8080;" v-on:click="changeColor"></button>
                                     <button class="uk-button color-button" style="background-color: #FFC580;" v-on:click="changeColor"></button>
@@ -106,9 +118,8 @@
                                 </div>
                             </div>
                         </li>
+                        <!-- Editing options -->
                     </ul>
-                </div>
-                <div class="uk-navbar-right uk-padding-small">
                     <ul class="uk-navbar-nav">
                         <li><i class="material-icons" uk-toggle="target: #save-work" v-on:click="saveWork">save_alt</i></li>
                     </ul>
