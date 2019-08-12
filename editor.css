@@ -48,10 +48,9 @@ html, body {
     -webkit-font-smoothing: subpixel-antialiased;
     top: 0px;
     left: 0px;
-    outline-color: #0c0c0c;
+    outline-color: rgba(255, 255, 255, 0.2);
     outline-style: solid;
-    outline-width: 1px;
-    box-shadow: 0em 0.0em 1.5em rgb(20, 20, 20);
+    outline-width: calc(4px / var(--scale));
 }
 
 .floating-box.selected {
