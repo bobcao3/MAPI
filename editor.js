@@ -240,8 +240,8 @@ let graph = new Vue({
         fontOptions: [
             { text: 'Roboto', value: "'Roboto', sans-serif" },
             { text: 'Lato', value: "'Lato', sans-serif" },
-            { text: 'Georgia', value: "'Georgia', serif" },
-            { text: 'Times New Roman',value: "'Times New Roman', Times, serif"},
+            { text: 'Garamond', value: "'EB Garamond', serif" },
+            { text: 'Times New Roman', value: "'Times New Roman', Times, serif"},
             { text: 'Long Cang', value: "'Long Cang', cursive" },
             { text: 'Comfortaa', value: "'Comfortaa', cursive" },
             { text: 'Roboto Mono', value: "'Roboto Mono', monospace" },
