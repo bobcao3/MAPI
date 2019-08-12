@@ -65,6 +65,9 @@ Vue.component('box', {
             resizingEvent.mouseDown = true;
             resizingEvent.resizeType = event.target.getAttribute("resize-type");
         },
+        changeTextSize: function(event){
+
+        },
         ondblclick: function(event) {
             graph.editingState.selectedText = true;
         }
@@ -123,7 +126,7 @@ Vue.component('box', {
                                  <a href="#">Size</a>
                                  <div class="uk-navbar-dropdown">
                                      <ul class="uk-nav uk-navbar-dropdown-nav">
-                                         <li class="uk-active"><a href="#" style="fontSize:26px">Head 1</a></li>
+                                         <li ><a id ="head1" href="#" style="fontSize:26px"">Head 1</a></li>
                                          <li><a href="#"  style="fontSize:20px">Head 2</a></li>
                                          <li><a href="#" style="fontSize:11px">Normal text</a></li>
                                      </ul>
@@ -148,6 +151,15 @@ Vue.component('box', {
     `
 })
 
+
+  let head1 = new Vue({
+  el: '#head1',
+  methods: {
+    say: function (message) {
+      alert(message)
+    }
+  }
+})
 let graph = new Vue({
     el: '#app',
     methods: {
@@ -156,7 +168,7 @@ let graph = new Vue({
                 this.editingState.selected.color = event.target.style.backgroundColor;
             }
         },
-      
+
         // This is the callback on the button
         createBox: function(event) {
             // Randomly select a font for this
@@ -409,10 +421,3 @@ function clickRect(){
    // c.style.color = "white";
    // t.style.color = "white";
 }
-
-function clickStticker(){
-
-}
-function boldfunc(id){
-  alert(id);
-  }
