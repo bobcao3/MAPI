@@ -48,7 +48,6 @@ function testSelectedCascaded(current, selected) {
 
 function deleteFrom(children, child) {
     if (child) {
-        console.log("Deleting ", child, " from ", children)
         for (ind in children) {
             let box = children[ind];
             if (box == child) {
@@ -418,22 +417,3 @@ window.addEventListener("keyup", event => {
         proportional = false;
     }
 })
-
-// click the reactangle to make cell
-function clickRect(){
-    let element = document.getElementById("rect");
-   // let c = document.getElementById("circle");
-   // let t = document.getElementById("tri");
-//     element.classList.toggle("clickedStyle");
-
-    element.style.color = "#FF80AB";
-   // c.style.color = "white";
-   // t.style.color = "white";
-}
-
-function clickStticker(){
-
-}
-function boldfunc(id){
-  alert(id);
-  }
