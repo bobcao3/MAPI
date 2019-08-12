@@ -239,7 +239,9 @@ let graph = new Vue({
         ],
         fontOptions: [
             { text: 'Roboto', value: "'Roboto', sans-serif" },
-            { text: 'Georgia', value: "'Georgia', serif" }
+            { text: 'Georgia', value: "'Georgia', serif" },
+            { text: 'Times New Roman',value: "'Times New Roman', Times, serif"},
+            { text: 'Aria',value:"'Arial', Helvetica, sans-serif"},
         ]
     }
 })
