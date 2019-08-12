@@ -36,6 +36,16 @@ function uuidv4() {
     });
 }
 
+function testSelectedCascaded(current, selected) {
+    if (selected && selected == current) return true;
+    for (ind in current.children) {
+        let box = current.children[ind];
+        let result = testSelectedCascaded(box, selected);
+        if (result) return true;
+    }
+    return false;
+}
+
 Vue.component('box', {
     props: ['boxdata', 'editing-state'],
     methods: {
@@ -77,13 +87,7 @@ Vue.component('box', {
             return i.editingState.selected && i.editingState.selected == i.boxdata && i.editingState.selectedText;
         },
         isSelectedCascaded: (i) => {
-            for (ind in i.boxdata.children) {
-                let box = i.boxdata.children[ind];
-                if (i.editingState.selected && i.editingState.selected == box) {
-                    return true;
-                }
-            }
-            return i.editingState.selected && i.editingState.selected == i.boxdata;
+            return testSelectedCascaded(i.boxdata, i.editingState.selected);
         }
     },
     template: `
@@ -132,9 +136,6 @@ let graph = new Vue({
             if (this.editingState.selected) {
                 this.editingState.selected.color = event.target.style.backgroundColor;
             }
-        },
-        makeBold: function(event) {
-
         },
         // This is the callback on the button
         createBox: function(event) {
