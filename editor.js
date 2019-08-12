@@ -75,6 +75,15 @@ Vue.component('box', {
         },
         isTextSelected: (i) => {
             return i.editingState.selected && i.editingState.selected == i.boxdata && i.editingState.selectedText;
+        },
+        isSelectedCascaded: (i) => {
+            for (ind in i.boxdata.children) {
+                let box = i.boxdata.children[ind];
+                if (i.editingState.selected && i.editingState.selected == box) {
+                    return true;
+                }
+            }
+            return i.editingState.selected && i.editingState.selected == i.boxdata;
         }
     },
     template: `
@@ -83,13 +92,14 @@ Vue.component('box', {
             class="uk-card floating-box non-select"
             v-on:pointerdown.stop="ondragstart"
             v-on:dblclick.stop="ondblclick"
-            v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected }"
+            v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected, cascaded: !isSelected && isSelectedCascaded }"
             v-bind:style="{
                 transform: 'translate3d(' + boxdata.anchor.x + 'px, ' + boxdata.anchor.y + 'px, 0.0)',
                 width: boxdata.size.x + 'px',
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
-                textColor: boxdata.textColor
+                textColor: boxdata.textColor,
+                overflow: isSelectedCascaded ? 'visible' : 'hidden'
             }">
             <textarea
                  v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"

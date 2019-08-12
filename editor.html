@@ -63,22 +63,6 @@
                         <!-- To bind a callback to an event, use v-on:event="callback" -->
                         <li><i class="material-icons" v-on:click="createBox">crop_5_4</i></li>
                         <li><i class="material-icons">photo_library</i></li>
-                        <li>
-                            <i class="material-icons">format_color_fill_24px</i>
-                            <!--This is the UIkit dropdown  -->
-                            <div id="colorbar" class="uk-navbar-dropdown color-pallete">
-                                <div>
-                                    <button class="uk-button color-button" style="background-color: #FF8080;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #FFC580;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #FFE380;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #92FF80;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #80E1FF;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #8A80FF;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #ED80FF;" v-on:click="changeColor"></button>
-                                    <button class="uk-button color-button" style="background-color: #FF80AB;" v-on:click="changeColor"></button>
-                                </div>
-                            </div>
-                        </li>
                     </ul>
                 </div>
                 <div class="uk-navbar-right">
@@ -105,13 +89,28 @@
                                 </option>
                             </select>
                         </li>
-
                         <li>
                             <select class="uk-select navbar-selections" v-model="editingState.selected.fontSize">
                                 <option v-for="option in textSizeOptions" v-bind:value="option.value">
                                     {{ option.text }}
                                 </option>
                             </select>
+                        </li>
+                        <li>
+                            <i class="material-icons">format_color_fill_24px</i>
+                            <!--This is the UIkit dropdown  -->
+                            <div id="colorbar" class="uk-navbar-dropdown color-pallete">
+                                <div>
+                                    <button class="uk-button color-button" style="background-color: #FF8080;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #FFC580;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #FFE380;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #92FF80;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #80E1FF;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #8A80FF;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #ED80FF;" v-on:click="changeColor"></button>
+                                    <button class="uk-button color-button" style="background-color: #FF80AB;" v-on:click="changeColor"></button>
+                                </div>
+                            </div>
                         </li>
                         <!-- Editing options -->
                     </ul>
