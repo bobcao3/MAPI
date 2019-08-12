@@ -107,7 +107,7 @@ Vue.component('box', {
     template: `
         <div
 
-            class="uk-card floating-box non-select"
+            class="uk-card floating-box"
             v-on:pointerdown.stop="ondragstart"
             v-on:dblclick.stop="ondblclick"
             v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected, cascaded: !isSelected && isSelectedCascaded }"
@@ -154,7 +154,7 @@ let graph = new Vue({
         deleteSelected: function() {
             deleteFrom(this.boxes, this.editingState.selected);
             this.editingState.selected = undefined;
-            this.editingState.isTextSelected = false;
+            this.editingState.textSelected = false;
         },
         // This is the callback on the button
         createBox: function(event) {
@@ -243,6 +243,13 @@ let graph = new Vue({
         ]
     }
 })
+
+document.addEventListener('mousedown', function (event) {
+    if (event.detail > 1 && !graph.editingState.selectedText) {
+        console.log(graph.editingState.selectedText)
+        event.preventDefault();
+    }
+}, false);
 
 graph_canvas = document.getElementById("graph-canvas-background");
 
