@@ -239,9 +239,13 @@ let graph = new Vue({
         ],
         fontOptions: [
             { text: 'Roboto', value: "'Roboto', sans-serif" },
+            { text: 'Lato', value: "'Lato', sans-serif" },
             { text: 'Georgia', value: "'Georgia', serif" },
             { text: 'Times New Roman',value: "'Times New Roman', Times, serif"},
-            { text: 'Aria',value:"'Arial', Helvetica, sans-serif"},
+            { text: 'Long Cang', value: "'Long Cang', cursive" },
+            { text: 'Comfortaa', value: "'Comfortaa', cursive" },
+            { text: 'Roboto Mono', value: "'Roboto Mono', monospace" },
+            { text: 'Cutive Mono', value: "'Cutive Mono', monospace"}
         ]
     }
 })
@@ -427,7 +431,6 @@ function clickRect(){
    // let c = document.getElementById("circle");
    // let t = document.getElementById("tri");
 //     element.classList.toggle("clickedStyle");
-
     element.style.color = "#FF80AB";
    // c.style.color = "white";
    // t.style.color = "white";
