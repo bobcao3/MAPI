@@ -46,6 +46,8 @@ html, body {
     padding: 5px;
     backface-visibility: hidden;
     -webkit-font-smoothing: subpixel-antialiased;
+    top: 0px;
+    left: 0px;
 }
 
 .floating-box.selected {
@@ -82,6 +84,13 @@ html, body {
     visibility: visible;
 }
 
+.floating-box .options {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 4px / var(--scale));
+    transform: none;
+}
+
 .floating-box > textarea {
     height: 100%;
     width: 100%;
@@ -102,8 +111,29 @@ html, body {
     outline: none;
 }
 
+.uk-navbar-nav > li > a {
+    color: white;
+    min-height: 1em;
+}
+
+.navbar-selections {
+    height: 100% !important;
+}
+
+.uk-navbar-nav > li > a :hover {
+    color: lightgrey;
+}
+
+.uk-navbar-nav > li > a :active {
+    color: #FF80AB;
+}
+
+#navBar {
+    height: 3em;
+}
+
 /* Merged from codeanywhere */
- .uk-navbar-container.non-select {
+.uk-navbar-container.non-select {
     background-color: #78909C;
     box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.1);
 }
@@ -112,10 +142,19 @@ html, body {
     color: white;
     margin-left: 0.3em;
     margin-right: 0.3em;
+    width: 1em;
 }
 
 .material-icons:active {
     color: #FF80AB;
+}
+
+.material-icons.toggled {
+    color: #FF80AB;
+}
+
+.material-icons.toggled:hover {
+    color: rgb(195, 97, 130);
 }
 
 .material-icons:hover {
