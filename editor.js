@@ -450,3 +450,8 @@ window.addEventListener("keyup", event => {
 })
 
 graph.recordHistory();
+
+UIkit.notification(
+    `<p>Need help? Checkout the <a href="help.html" target="_blank">starter guide</a></p>`,
+    { pos: 'bottom-left' }
+)
