@@ -1,5 +1,5 @@
 let draggingEvent = {
-    mouseDown: false,
+    pointerdown: false,
     dataElement: undefined,
     mouseStartX: undefined,
     mouseStartY: undefined,
@@ -8,7 +8,7 @@ let draggingEvent = {
 }
 
 let resizingEvent = {
-    mouseDown: false,
+    pointerdown: false,
     dataElement: undefined,
     mouseStartX: undefined,
     mouseStartY: undefined,
@@ -92,7 +92,7 @@ Vue.component('box', {
                 draggingEvent.boxStartX = this.boxdata.anchor.x;
                 draggingEvent.boxStartY = this.boxdata.anchor.y;
                 draggingEvent.dataElement = this.boxdata;
-                draggingEvent.mouseDown = true;
+                draggingEvent.pointerdown = true;
             }
         },
         onresizeStart: function(event) {
@@ -103,7 +103,7 @@ Vue.component('box', {
             resizingEvent.boxStartSizeX = this.boxdata.size.x;
             resizingEvent.boxStartSizeY = this.boxdata.size.y;
             resizingEvent.dataElement = this.boxdata;
-            resizingEvent.mouseDown = true;
+            resizingEvent.pointerdown = true;
             resizingEvent.resizeType = event.target.getAttribute("resize-type");
         },
         ondblclick: function(event) {
@@ -129,7 +129,7 @@ Vue.component('box', {
         <div
 
             class="uk-card floating-box"
-            v-on:mousedown.stop="ondragstart"
+            v-on:pointerdown.stop="ondragstart"
             v-on:dblclick.stop="ondblclick"
             v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected, cascaded: !isSelected && isSelectedCascaded }"
             v-bind:style="{
@@ -148,10 +148,10 @@ Vue.component('box', {
             ></textarea>
 
             <div class="frame" v-if="isSelected && !isTextSelected">
-                <span class="handle uk-position-top-left" resize-type="topleft" v-on:mousedown="onresizeStart"></span>
-                <span class="handle uk-position-top-right" resize-type="topright" v-on:mousedown="onresizeStart"></span>
-                <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:mousedown="onresizeStart"></span>
-                <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:mousedown="onresizeStart"></span>
+                <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
             </div>
 
             <box
@@ -280,7 +280,7 @@ graph_canvas = document.getElementById("graph-canvas-background");
 graph_canvas_anchor = document.getElementById("graph-canvas");
 
 let canvasDragginEvent = {
-    mouseDown: false,
+    pointerdown: false,
     mouseStartX: undefined,
     mouseStartY: undefined,
     elementStartX: 0,
@@ -305,13 +305,13 @@ function createNewBoxMouseClick(event) {
     graph.editingState.creatingBox = false;
 }
 
-graph_canvas.onmousedown = function(event) {
+graph_canvas.onpointerdown = function(event) {
     graph.editingState.selected = undefined;
 
     if (graph.editingState.creatingBox) {
         createNewBoxMouseClick(event);
     } else if (event.target == graph_canvas) {
-        canvasDragginEvent.mouseDown = true;
+        canvasDragginEvent.pointerdown = true;
         canvasDragginEvent.mouseStartX = event.clientX;
         canvasDragginEvent.mouseStartY = event.clientY;
     }
@@ -412,37 +412,37 @@ function handleResize(event) {
     resizingEvent.dataElement.size.y = ys;
 }
 
-graph_canvas.onmousemove = function(event) {
-    if (draggingEvent.mouseDown) {
+graph_canvas.onpointermove = function(event) {
+    if (draggingEvent.pointerdown) {
         handleDrag(event);
     }
-    if (canvasDragginEvent.mouseDown) {
+    if (canvasDragginEvent.pointerdown) {
         handleCanvasDrag(event);
     }
-    if (resizingEvent.mouseDown) {
+    if (resizingEvent.pointerdown) {
         handleResize(event);
     }
 };
 
 function pointerup(event) {
-    if (draggingEvent.mouseDown) {
+    if (draggingEvent.pointerdown) {
         handleDrag(event);
-        draggingEvent.mouseDown = false;
+        draggingEvent.pointerdown = false;
     }
-    if (canvasDragginEvent.mouseDown) {
+    if (canvasDragginEvent.pointerdown) {
         handleCanvasDrag(event, true);
-        canvasDragginEvent.mouseDown = false;
+        canvasDragginEvent.pointerdown = false;
         graph.editingState.selectedText = false;
     }
-    if (resizingEvent.mouseDown) {
+    if (resizingEvent.pointerdown) {
         handleResize(event);
-        resizingEvent.mouseDown = false;
+        resizingEvent.pointerdown = false;
         graph.editingState.selectedText = false;
     }
 }
 
-graph_canvas.onmouseup = pointerup
-graph_canvas.onmouseup = pointerup;
+graph_canvas.onpointerup = pointerup
+graph_canvas.onpointerleave = pointerup;
 
 graph_canvas.onwheel = event => {
     event.preventDefault();

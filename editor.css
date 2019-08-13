@@ -87,6 +87,7 @@ html, body {
     width: calc(100% + 22px / var(--scale));
     height: calc(100% + 22px / var(--scale));
     visibility: hidden;
+    z-index: 5;
 }
 
 .floating-box .frame .handle {
