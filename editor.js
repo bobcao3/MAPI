@@ -317,15 +317,19 @@ graph_canvas.onpointerdown = function(event) {
     }
 }
 
-function handleCanvasDrag(event, setSize = false) {
-    let x = canvasDragginEvent.elementStartX + event.x - canvasDragginEvent.mouseStartX;
-    let y = canvasDragginEvent.elementStartY + event.y - canvasDragginEvent.mouseStartY;
+function canvasDrag(dx, dy, setSize = false) {
+    let x = canvasDragginEvent.elementStartX + dx;
+    let y = canvasDragginEvent.elementStartY + dy;
     graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
     graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
     if (setSize) {
         canvasDragginEvent.elementStartX = x;
         canvasDragginEvent.elementStartY = y;
     }
+}
+
+function handleCanvasDrag(event, setSize = false) {
+    canvasDrag(event.x - canvasDragginEvent.mouseStartX, event.y - canvasDragginEvent.mouseStartY, setSize);
 }
 
 function handleDrag(event) {
@@ -436,31 +440,37 @@ function pointerup(event) {
 graph_canvas.onpointerup = pointerup
 graph_canvas.onpointerleave = pointerup;
 
-window.addEventListener("wheel", event => {
-    let delta = event.deltaY;
-    let zoomLevelPrev = zoomLevel;
-    if (delta > 0) {
-        zoomLevel /= wheelDelta;
+graph_canvas.onwheel = event => {
+    event.preventDefault();
+
+    if (event.ctrlKey) {
+        let delta = event.deltaY;
+        let zoomLevelPrev = zoomLevel;
+        if (delta > 0) {
+            zoomLevel /= wheelDelta;
+        } else {
+            zoomLevel *= wheelDelta;
+        }
+    
+        let pos = getCanvasXY(event.clientX, event.clientY, graph_canvas_anchor);
+    
+        let x = canvasDragginEvent.elementStartX;
+        let y = canvasDragginEvent.elementStartY;
+    
+        x += (x + pos.x) * (zoomLevelPrev - zoomLevel) / zoomLevel;
+        y += (y + pos.y) * (zoomLevelPrev - zoomLevel) / zoomLevel;
+    
+        canvasDragginEvent.elementStartX = x;
+        canvasDragginEvent.elementStartY = y;
+    
+        graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
+        graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
+    
+        graph_canvas.style.setProperty('--scale', zoomLevel);
     } else {
-        zoomLevel *= wheelDelta;
+        canvasDrag(event.deltaX / zoomLevel, event.deltaY / zoomLevel, true);
     }
-
-    let pos = getCanvasXY(event.clientX, event.clientY, graph_canvas_anchor);
-
-    let x = canvasDragginEvent.elementStartX;
-    let y = canvasDragginEvent.elementStartY;
-
-    x += (x + pos.x) * (zoomLevelPrev - zoomLevel) / zoomLevel;
-    y += (y + pos.y) * (zoomLevelPrev - zoomLevel) / zoomLevel;
-
-    canvasDragginEvent.elementStartX = x;
-    canvasDragginEvent.elementStartY = y;
-
-    graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
-    graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
-
-    graph_canvas.style.setProperty('--scale', zoomLevel);
-});
+};
 
 window.addEventListener("keydown", event => {
     if (event.key == "Control") {
