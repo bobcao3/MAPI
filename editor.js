@@ -483,7 +483,14 @@ window.addEventListener("keydown", event => {
     if (event.key == "Shift") {
         proportional = true;
     }
+    if ((event.key == 'Delete' || event.key == "Backspace") && graph.editingState.selected) {
+        graph.deleteSelected();
+    }
 })
+
+document.addEventListener("contextmenu", function(e){
+    e.preventDefault();
+}, false);
 
 window.addEventListener("keyup", event => {
     if (event.key == "Control") {
