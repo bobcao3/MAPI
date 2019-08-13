@@ -38,11 +38,12 @@
         <script src="https://cdn.jsdelivr.net/npm/pson@2.0.0/dist/PSON.min.js"></script>
         <script id="lzutf8" src="https://cdn.jsdelivr.net/npm/lzutf8/build/production/lzutf8.min.js"></script>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/color-js/1.0.1/color.min.js" integrity="sha256-qAjuzGZ65rH+O8iRUmRdRCgk33HmM0Gbq15CwUsxW3k=" crossorigin="anonymous"></script>
     </head>
     <body>
 
         <div id="app">
-            <div id="graph-canvas-background">
+            <div id="graph-canvas-background" v-bind:class="{ creatingNewBox: editingState.creatingBox }">
                 <div id="graph-canvas">
                     <box
                         v-for="box in boxes"
@@ -64,7 +65,13 @@
                         <li><i class="material-icons">undo</i></li>
                         <li><i class="material-icons">redo</i></li>
                         <!-- To bind a callback to an event, use v-on:event="callback" -->
-                        <li><i class="material-icons" v-on:click="createBox">crop_5_4</i></li>
+                        <li>
+                            <i
+                                class="material-icons"
+                                v-on:click="editingState.creatingBox = true"
+                                v-bind:class="{ toggled : editingState.creatingBox }"
+                            >crop_5_4</i>
+                        </li>
                         <li><i class="material-icons">photo_library</i></li>
                     </ul>
                 </div>

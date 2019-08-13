@@ -18,7 +18,8 @@ html, body {
 
 #graph-canvas {
     display: block;
-    transform: perspective(1px) translate3d(var(--bg-offset-x), var(--bg-offset-y), 0) scale3d(var(--scale), var(--scale), 1.0);
+    transform-origin: top left;
+    transform: scale3d(var(--scale), var(--scale), 1.0) translate3d(var(--bg-offset-x), var(--bg-offset-y), 0);
     backface-visibility: hidden;
 }
 
@@ -31,10 +32,12 @@ html, body {
     /* This produces the grid background */
     --bg-size: 32px;
     --bg-size-scaled: calc(var(--bg-size) * var(--scale));
+    --bg-offset-x-scaled: calc(var(--bg-offset-x) * var(--scale));
+    --bg-offset-y-scaled: calc(var(--bg-offset-y) * var(--scale));
     background-size: var(--bg-size-scaled) var(--bg-size-scaled);
     background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
     background-color: #FCFCFC;
-    background-position: var(--bg-offset-x) var(--bg-offset-y);
+    background-position: var(--bg-offset-x-scaled) var(--bg-offset-y-scaled);
 }
 
 .floating-box {
@@ -49,8 +52,10 @@ html, body {
     top: 0px;
     left: 0px;
     box-sizing: border-box;
+
     border-style: solid;
     border-width: calc(3px / var(--scale));
+    border-color: rgba(255,255,255,0.2);
 }
 
 .floating-box.selected {
@@ -68,7 +73,7 @@ html, body {
 }
 
 .floating-box.cascaded {
-    box-shadow: 0em 0.0em calc(2.0em / var(--cale)) rgb(255, 128, 171);
+    box-shadow: 0em 0.0em calc(2.0em / var(--scale)) rgb(255, 128, 171);
     outline-color: rgb(255, 128, 171);
     outline-style: dashed;
     outline-width: calc(2px / var(--scale));
@@ -76,10 +81,10 @@ html, body {
 
 .floating-box .frame {
     position: absolute;
-    left: calc(-8px / var(--scale));
-    top: calc(-8px / var(--scale));
-    width: calc(100% + 16px / var(--scale));
-    height: calc(100% + 16px / var(--scale));
+    left: calc(-11px / var(--scale));
+    top: calc(-11px / var(--scale));
+    width: calc(100% + 22px / var(--scale));
+    height: calc(100% + 22px / var(--scale));
     visibility: hidden;
 }
 
@@ -92,6 +97,22 @@ html, body {
     border-width: calc(1px / var(--scale));
     border-style: solid;
     visibility: visible;
+}
+
+.floating-box .frame .handle.uk-position-top-left {
+    cursor: nw-resize;
+}
+
+.floating-box .frame .handle.uk-position-top-right {
+    cursor: ne-resize;
+}
+
+.floating-box .frame .handle.uk-position-bottom-right {
+    cursor: se-resize;
+}
+
+.floating-box .frame .handle.uk-position-bottom-left {
+    cursor: sw-resize;
 }
 
 .floating-box .options {
@@ -114,12 +135,20 @@ html, body {
     transition: font-weight 0.2s ease, font-size 0.1s ease;
 }
 
+.floating-box > textarea.non-select {
+    cursor: inherit;
+}
+
 .floating-box > textarea:active {
     outline: none;
 }
 
 .floating-box > textarea:focus {
     outline: none;
+}
+
+.creatingNewBox {
+    cursor: crosshair;
 }
 
 .uk-navbar-nav > li > a {

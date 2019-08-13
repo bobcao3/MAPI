@@ -19,6 +19,8 @@ let resizingEvent = {
     resizeType: undefined
 }
 
+var Color = net.brehaut.Color;
+
 let zoomLevel = 1.0;
 let wheelDelta = 1.05;
 
@@ -59,6 +61,19 @@ function deleteFrom(children, child) {
     }
 }
 
+function getOffset(lists, child) {
+    for (ind in lists) {
+        let box = lists[ind];
+        if (box == child) {
+            return box.anchor
+        } else {
+            let result = getOffset(box.children, child);
+            if (result) {
+                return {x: result.x + box.anchor.x, y: result.y + box.anchor.y}
+            }
+        }
+    }
+}
 
 Vue.component('box', {
     props: ['boxdata', 'editing-state'],
@@ -69,7 +84,9 @@ Vue.component('box', {
                 this.editingState.selectedText = false;
             }
 
-            if (!this.editingState.selectedText) {
+            if (this.editingState.creatingBox) {
+                createNewBoxMouseClick(event);
+            } else if (!this.editingState.selectedText) {
                 draggingEvent.mouseStartX = event.x;
                 draggingEvent.mouseStartY = event.y;
                 draggingEvent.boxStartX = this.boxdata.anchor.x;
@@ -91,24 +108,6 @@ Vue.component('box', {
         },
         ondblclick: function(event) {
             graph.editingState.selectedText = true;
-        },
-        ColorLuminance: function(hex, lum) {
-            // validate hex string
-            hex = String(hex).replace(/[^0-9a-f]/gi, '');
-            if (hex.length < 6) {
-                hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-            }
-            lum = lum || 0;
-
-            // convert to decimal and change luminosity
-            var rgb = "#", c, i;
-            for (i = 0; i < 3; i++) {
-                c = parseInt(hex.substr(i*2,2), 16);
-                c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-                rgb += ("00"+c).substr(c.length);
-            }
-
-            return rgb;
         }
     },
     computed: {
@@ -120,6 +119,10 @@ Vue.component('box', {
         },
         isSelectedCascaded: (i) => {
             return testSelectedCascaded(i.boxdata, i.editingState.selected);
+        },
+        isImmediateFather: (i) => {
+            if (!i.editingState.selected) return true;
+            
         }
     },
     template: `
@@ -134,7 +137,6 @@ Vue.component('box', {
                 width: boxdata.size.x + 'px',
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
-                borderColor: ColorLuminance(boxdata.color, 0.4),
                 color: boxdata.textColor,
                 overflow: isSelectedCascaded ? 'visible' : 'hidden'
             }">
@@ -176,16 +178,14 @@ let graph = new Vue({
             this.editingState.textSelected = false;
         },
         // This is the callback on the button
-        createBox: function(event) {
+        createBox: function(x, y) {
             // This defines the new box data
             let newBox = {
                 // Generate a random unique id for this new box (don't modify this)
                 id: uuidv4(),
                 // The position it will be put on
-                // You may want to set it to mouse position or something
                 anchor: {
-                    x: Math.random() * 1000, // Random value as example
-                    y: Math.random() * 600   // Random value as example
+                    x: x, y: y
                 },
                 // The size of newly created box
                 size: {
@@ -245,7 +245,8 @@ let graph = new Vue({
         ],
         editingState: {
             selected: undefined,
-            selectedText: false
+            selectedText: false,
+            creatingBox: false
         },
         savedData: "",
         loadData: "",
@@ -276,6 +277,7 @@ document.addEventListener('mousedown', function (event) {
 }, false);
 
 graph_canvas = document.getElementById("graph-canvas-background");
+graph_canvas_anchor = document.getElementById("graph-canvas");
 
 let canvasDragginEvent = {
     mouseDown: false,
@@ -285,12 +287,33 @@ let canvasDragginEvent = {
     elementStartY: 0,
 }
 
+function getCanvasXY(x, y, target) {
+    let viewportX = x;
+    let viewportY = y;
+    if (target == graph_canvas) target = graph_canvas_anchor;
+    let boxRectangle = target.getBoundingClientRect();
+    let localX = (viewportX - boxRectangle.left) / zoomLevel;
+    let localY = (viewportY - boxRectangle.top) / zoomLevel;
+
+    return {x: localX, y: localY}
+}
+
+function createNewBoxMouseClick(event) {
+    let pos = getCanvasXY(event.clientX, event.clientY, event.target);
+    
+    graph.createBox(pos.x, pos.y);
+    graph.editingState.creatingBox = false;
+}
+
 graph_canvas.onpointerdown = function(event) {
-    if (event.target == graph_canvas) {
+    graph.editingState.selected = undefined;
+
+    if (graph.editingState.creatingBox) {
+        createNewBoxMouseClick(event);
+    } else if (event.target == graph_canvas) {
         canvasDragginEvent.mouseDown = true;
         canvasDragginEvent.mouseStartX = event.x;
         canvasDragginEvent.mouseStartY = event.y;
-        graph.editingState.selected = undefined;
     }
 }
 
@@ -414,15 +437,29 @@ graph_canvas.onpointerup = pointerup
 graph_canvas.onpointerleave = pointerup;
 
 window.addEventListener("wheel", event => {
-    if (event.target == graph_canvas) {
-        let delta = event.deltaY;
-        if (delta > 0) {
-            zoomLevel /= wheelDelta;
-        } else {
-            zoomLevel *= wheelDelta;
-        }
-        graph_canvas.style.setProperty('--scale', zoomLevel);
+    let delta = event.deltaY;
+    let zoomLevelPrev = zoomLevel;
+    if (delta > 0) {
+        zoomLevel /= wheelDelta;
+    } else {
+        zoomLevel *= wheelDelta;
     }
+
+    let pos = getCanvasXY(event.clientX, event.clientY, graph_canvas_anchor);
+
+    let x = canvasDragginEvent.elementStartX;
+    let y = canvasDragginEvent.elementStartY;
+
+    x += (x + pos.x) * (zoomLevelPrev - zoomLevel) / zoomLevel;
+    y += (y + pos.y) * (zoomLevelPrev - zoomLevel) / zoomLevel;
+
+    canvasDragginEvent.elementStartX = x;
+    canvasDragginEvent.elementStartY = y;
+
+    graph_canvas.style.setProperty('--bg-offset-x', x + 'px');
+    graph_canvas.style.setProperty('--bg-offset-y', y + 'px');
+
+    graph_canvas.style.setProperty('--scale', zoomLevel);
 });
 
 window.addEventListener("keydown", event => {
