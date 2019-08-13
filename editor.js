@@ -22,7 +22,7 @@ let resizingEvent = {
 var Color = net.brehaut.Color;
 
 let zoomLevel = 1.0;
-let wheelDelta = 1.05;
+let wheelDelta = 0.001;
 
 let snapToGrid = false;
 let proportional = false;
@@ -129,7 +129,7 @@ Vue.component('box', {
         <div
 
             class="uk-card floating-box"
-            v-on:pointerdown.stop="ondragstart"
+            v-on:mousedown.stop="ondragstart"
             v-on:dblclick.stop="ondblclick"
             v-bind:class="{ selected: isSelected && !isTextSelected, textSelected: isTextSelected, cascaded: !isSelected && isSelectedCascaded }"
             v-bind:style="{
@@ -148,10 +148,10 @@ Vue.component('box', {
             ></textarea>
 
             <div class="frame" v-if="isSelected && !isTextSelected">
-                <span class="handle uk-position-top-left" resize-type="topleft" v-on:pointerdown="onresizeStart"></span>
-                <span class="handle uk-position-top-right" resize-type="topright" v-on:pointerdown="onresizeStart"></span>
-                <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:pointerdown="onresizeStart"></span>
-                <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:pointerdown="onresizeStart"></span>
+                <span class="handle uk-position-top-left" resize-type="topleft" v-on:mousedown="onresizeStart"></span>
+                <span class="handle uk-position-top-right" resize-type="topright" v-on:mousedown="onresizeStart"></span>
+                <span class="handle uk-position-bottom-left" resize-type="bottomleft" v-on:mousedown="onresizeStart"></span>
+                <span class="handle uk-position-bottom-right" resize-type="bottomright" v-on:mousedown="onresizeStart"></span>
             </div>
 
             <box
@@ -305,7 +305,7 @@ function createNewBoxMouseClick(event) {
     graph.editingState.creatingBox = false;
 }
 
-graph_canvas.onpointerdown = function(event) {
+graph_canvas.onmousedown = function(event) {
     graph.editingState.selected = undefined;
 
     if (graph.editingState.creatingBox) {
@@ -408,7 +408,7 @@ function handleResize(event) {
     resizingEvent.dataElement.size.y = ys;
 }
 
-graph_canvas.onpointermove = function(event) {
+graph_canvas.onmousemove = function(event) {
     if (draggingEvent.mouseDown) {
         handleDrag(event);
     }
@@ -437,8 +437,8 @@ function pointerup(event) {
     }
 }
 
-graph_canvas.onpointerup = pointerup
-graph_canvas.onpointerleave = pointerup;
+graph_canvas.onmouseup = pointerup
+graph_canvas.onmouseup = pointerup;
 
 graph_canvas.onwheel = event => {
     event.preventDefault();
@@ -447,9 +447,9 @@ graph_canvas.onwheel = event => {
         let delta = event.deltaY;
         let zoomLevelPrev = zoomLevel;
         if (delta > 0) {
-            zoomLevel /= wheelDelta;
+            zoomLevel /= 1.0 + wheelDelta * delta;
         } else {
-            zoomLevel *= wheelDelta;
+            zoomLevel *= 1.0 - wheelDelta * delta;
         }
     
         let pos = getCanvasXY(event.clientX, event.clientY, graph_canvas_anchor);
@@ -471,14 +471,6 @@ graph_canvas.onwheel = event => {
         canvasDrag(-event.deltaX / zoomLevel, -event.deltaY / zoomLevel, true);
     }
 };
-
-var zt = new ZingTouch.Region(document.body);
-
-var myElement = document.getElementById('my-div');
-
-zt.bind(myElement, 'pan', function(event){
-	canvasDrag(-event.deltaX / zoomLevel, -event.deltaY / zoomLevel, true);
-}, false);
 
 window.addEventListener("keydown", event => {
     if (event.key == "Control") {
