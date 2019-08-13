@@ -468,7 +468,7 @@ graph_canvas.onwheel = event => {
     
         graph_canvas.style.setProperty('--scale', zoomLevel);
     } else {
-        canvasDrag(event.deltaX / zoomLevel, event.deltaY / zoomLevel, true);
+        canvasDrag(-event.deltaX / zoomLevel, -event.deltaY / zoomLevel, true);
     }
 };
 
