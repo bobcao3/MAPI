@@ -472,6 +472,14 @@ graph_canvas.onwheel = event => {
     }
 };
 
+var zt = new ZingTouch.Region(document.body);
+
+var myElement = document.getElementById('my-div');
+
+zt.bind(myElement, 'pan', function(event){
+	canvasDrag(-event.deltaX / zoomLevel, -event.deltaY / zoomLevel, true);
+}, false);
+
 window.addEventListener("keydown", event => {
     if (event.key == "Control") {
         snapToGrid = true;
