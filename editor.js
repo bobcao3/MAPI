@@ -141,10 +141,11 @@ Vue.component('box', {
                 overflow: isSelectedCascaded ? 'visible' : 'hidden'
             }">
             <textarea
-                 v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
-                 v-bind:readonly="!isTextSelected"
-                 v-model="boxdata.text"
-                 v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px', fontStyle: boxdata.italic ? 'italic' : 'normal', fontWeight: boxdata.bold ? 'bold' : 'normal' }"
+                placeholder="New Box ..."
+                v-bind:class="{ select: isTextSelected, 'non-select': !isTextSelected }"
+                v-bind:readonly="!isTextSelected"
+                v-model="boxdata.text"
+                v-bind:style="{ fontFamily: boxdata.font, fontSize: Math.round(boxdata.fontSize) + 'px', fontStyle: boxdata.italic ? 'italic' : 'normal', fontWeight: boxdata.bold ? 'bold' : 'normal' }"
             ></textarea>
 
             <div class="frame" v-if="isSelected && !isTextSelected">
@@ -163,6 +164,14 @@ Vue.component('box', {
         </div>
     `
 })
+
+function jsonEqual(a,b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function jsonClone(a) {
+    return JSON.parse(JSON.stringify(a));
+}
 
 let graph = new Vue({
     el: '#app',
@@ -195,7 +204,7 @@ let graph = new Vue({
                 // The color of the new box
                 color: "#FF8080", // must be in hex
                 textColor: "#0c0c0c", // Color of text
-                text: "New Box", // the text content
+                text: "", // the text content
                 font: this.fontOptions[0].value, // Default to Roboto
                 fontSize: this.textSizeOptions[0].value,
                 italic: false,
@@ -218,6 +227,11 @@ let graph = new Vue({
 
             let saveField = document.getElementById("load-work");
             UIkit.offcanvas(saveField).hide();
+
+            this.$nextTick(() => {
+                this.undoHistory = [];
+                this.redoHistory = [];    
+            });
         },
         saveWork: function(event) {
             this.saveFileStatus = "";
@@ -237,6 +251,29 @@ let graph = new Vue({
                 }
             } catch (err) {
                 this.saveFileStatus = "Unable to copy to clipboard. Please copy the save data manually.";
+            }
+        },
+        recordHistory: function() {
+            if (this.undoHistory.length > 0 && jsonEqual(this.boxes, this.undoHistory[this.undoHistory.length - 1])) return;
+
+            this.undoHistory.push(jsonClone(this.boxes));
+            this.redoHistory = [];
+
+            console.log("History added ", this.undoHistory.length);
+        },
+        undo: function() {
+            if (this.undoHistory.length > 1) {
+                let boxes = this.undoHistory.pop();
+                this.redoHistory.push(boxes);
+                this.boxes = jsonClone(this.undoHistory[this.undoHistory.length - 1]);
+                console.log("History popped ", this.undoHistory.length, boxes)
+            }
+        },
+        redo: function() {
+            if (this.redoHistory.length > 0) {
+                let boxes = this.redoHistory.pop();
+                this.undoHistory.push(boxes);
+                this.boxes = jsonClone(this.undoHistory[this.undoHistory.length - 1]);
             }
         }
     },
@@ -266,8 +303,18 @@ let graph = new Vue({
             { text: 'Comfortaa', value: "'Comfortaa', cursive" },
             { text: 'Roboto Mono', value: "'Roboto Mono', monospace" },
             { text: 'Cutive Mono', value: "'Cutive Mono', monospace"}
-        ]
-    }
+        ],
+        undoHistory: [],
+        redoHistory: []
+    },
+    watch: {
+        boxes: function () {
+            this.recordHistory();
+        },
+        editingState: function() {
+            this.recordHistory();
+        }
+    },
 })
 
 document.addEventListener('mousedown', function (event) {
@@ -425,6 +472,7 @@ graph_canvas.onpointermove = function(event) {
 };
 
 function pointerup(event) {
+    graph.recordHistory();
     if (draggingEvent.pointerdown) {
         handleDrag(event);
         draggingEvent.pointerdown = false;
@@ -483,8 +531,19 @@ window.addEventListener("keydown", event => {
     if (event.key == "Shift") {
         proportional = true;
     }
-    if ((event.key == 'Delete' || event.key == "Backspace") && graph.editingState.selected) {
+    if ((event.key == 'Delete' || event.key == "Backspace") && graph.editingState.selected && !graph.editingState.selectedText) {
         graph.deleteSelected();
+    }
+    if (event.keyCode == 90 && event.ctrlKey) {
+        // Ctrl + Z
+        graph.undo();
+        event.preventDefault();
+    } else if (event.keyCode == 82 && event.ctrlKey) {
+        // Ctrl + R
+        graph.redo();
+        event.preventDefault();
+    } else {
+        graph.recordHistory();
     }
 })
 
@@ -500,3 +559,5 @@ window.addEventListener("keyup", event => {
         proportional = false;
     }
 })
+
+graph.recordHistory();

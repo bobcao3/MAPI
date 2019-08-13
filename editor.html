@@ -62,13 +62,13 @@
                 </div>
                 <div class="uk-navbar-center">
                     <ul class="uk-navbar-nav uk-flex uk-flex-center">
-                        <li><i class="material-icons">undo</i></li>
-                        <li><i class="material-icons">redo</i></li>
+                        <li><a><i class="material-icons" v-on:click="undo">undo</i></a></li>
+                        <li><a><i class="material-icons" v-on:click="redo">redo</i></a></li>
                         <!-- To bind a callback to an event, use v-on:event="callback" -->
                         <li>
                             <i
                                 class="material-icons"
-                                v-on:click="editingState.creatingBox = true"
+                                v-on:click="editingState.creatingBox = !editingState.creatingBox"
                                 v-bind:class="{ toggled : editingState.creatingBox }"
                             >crop_5_4</i>
                         </li>
@@ -79,10 +79,10 @@
                     <ul class="uk-navbar-nav" v-if="editingState.selected">
                         <!-- Editing options -->
                         <li>
-                            <i
+                            <a><i
                                 class="material-icons"
                                 v-on:click="deleteSelected"
-                            >delete_outline</i>
+                            >delete_outline</i></a>
                         </li>
                         <li>
                             <i class = "material-icons"

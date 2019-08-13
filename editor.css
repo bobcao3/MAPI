@@ -163,7 +163,7 @@ html, body {
 }
 
 .uk-navbar-nav > li > a :hover {
-    color: lightgrey;
+    color: rgba(255,255,255,0.8);
 }
 
 .uk-navbar-nav > li > a :active {
@@ -188,6 +188,11 @@ html, body {
     transition: color 0.1s ease;
 }
 
+.uk-navbar-nav > li > a {
+    margin: 0;
+    padding: 0px;
+}
+
 .material-icons:active {
     color: #FF80AB;
 }
@@ -201,7 +206,7 @@ html, body {
 }
 
 .material-icons:hover {
-    color: lightgrey;
+    color: rgba(255,255,255,0.8);
 }
 
 .uk-navbar-nav > li {
