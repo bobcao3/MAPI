@@ -87,8 +87,8 @@ Vue.component('box', {
             if (this.editingState.creatingBox) {
                 createNewBoxMouseClick(event);
             } else if (!this.editingState.selectedText) {
-                draggingEvent.mouseStartX = event.x;
-                draggingEvent.mouseStartY = event.y;
+                draggingEvent.mouseStartX = event.clientX;
+                draggingEvent.mouseStartY = event.clientY;
                 draggingEvent.boxStartX = this.boxdata.anchor.x;
                 draggingEvent.boxStartY = this.boxdata.anchor.y;
                 draggingEvent.dataElement = this.boxdata;
@@ -96,8 +96,8 @@ Vue.component('box', {
             }
         },
         onresizeStart: function(event) {
-            resizingEvent.mouseStartX = event.x;
-            resizingEvent.mouseStartY = event.y;
+            resizingEvent.mouseStartX = event.clientX;
+            resizingEvent.mouseStartY = event.clientY;
             resizingEvent.boxStartX = this.boxdata.anchor.x;
             resizingEvent.boxStartY = this.boxdata.anchor.y;
             resizingEvent.boxStartSizeX = this.boxdata.size.x;
@@ -312,8 +312,8 @@ graph_canvas.onmousedown = function(event) {
         createNewBoxMouseClick(event);
     } else if (event.target == graph_canvas) {
         canvasDragginEvent.mouseDown = true;
-        canvasDragginEvent.mouseStartX = event.x;
-        canvasDragginEvent.mouseStartY = event.y;
+        canvasDragginEvent.mouseStartX = event.clientX;
+        canvasDragginEvent.mouseStartY = event.clientY;
     }
 }
 
@@ -329,12 +329,16 @@ function canvasDrag(dx, dy, setSize = false) {
 }
 
 function handleCanvasDrag(event, setSize = false) {
-    canvasDrag(event.x - canvasDragginEvent.mouseStartX, event.y - canvasDragginEvent.mouseStartY, setSize);
+    canvasDrag(
+        (event.clientX - canvasDragginEvent.mouseStartX) / zoomLevel,
+        (event.clientY - canvasDragginEvent.mouseStartY) / zoomLevel,
+        setSize
+    );
 }
 
 function handleDrag(event) {
-    let dx = (event.x - draggingEvent.mouseStartX) / zoomLevel;
-    let dy = (event.y - draggingEvent.mouseStartY) / zoomLevel;
+    let dx = (event.clientX - draggingEvent.mouseStartX) / zoomLevel;
+    let dy = (event.clientY - draggingEvent.mouseStartY) / zoomLevel;
     if (proportional) {
         if (Math.abs(dx) > Math.abs(dy)) {
             dy = 0;
@@ -354,8 +358,8 @@ function handleDrag(event) {
 }
 
 function handleResize(event) {
-    let dx = (event.x - resizingEvent.mouseStartX) / zoomLevel;
-    let dy = (event.y - resizingEvent.mouseStartY) / zoomLevel;
+    let dx = (event.clientX - resizingEvent.mouseStartX) / zoomLevel;
+    let dy = (event.clientY - resizingEvent.mouseStartY) / zoomLevel;
     let x = resizingEvent.boxStartX;
     let y = resizingEvent.boxStartY;
     let xs = resizingEvent.boxStartSizeX;
