@@ -61,7 +61,9 @@ Vue.component('box', {
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
                 color: boxdata.textColor,
-                overflow: isSelectedCascaded ? 'visible' : 'hidden'
+                overflow: isSelectedCascaded ? 'visible' : 'hidden',
+                backgroundImage: boxdata.bgImage ? 'url(' + boxdata.bgImage + ')' : '',
+                backgroundSize: boxdata.size.x + 'px ' + boxdata.size.y + 'px'
             }">
             <textarea
                 placeholder="New Box ..."

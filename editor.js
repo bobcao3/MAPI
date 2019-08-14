@@ -164,6 +164,29 @@ let graph = new Vue({
                 this.undoHistory.push(boxes);
                 this.boxes = jsonClone(this.undoHistory[this.undoHistory.length - 1]);
             }
+        },
+        uploadPicture: function(event) {
+            let URL = window.webkitURL || window.URL;
+            let url = URL.createObjectURL(event.target.files[0]);
+            
+            let reader = new FileReader();
+            let selected = this.editingState.selected;
+
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    // Render thumbnail.
+                    let span = document.createElement('span');
+                    span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                                        '" title="', escape(theFile.name), '"/>'].join('');
+                    //document.getElementById('list').insertBefore(span, null);
+                    selected.bgImage = e.target.result;
+                };
+            })(event.target.files[0]);
+
+            // Read in the image file as a data URL.
+            console.log(reader.readAsDataURL(event.target.files[0]));
+
         }
     },
     data: {
@@ -194,7 +217,8 @@ let graph = new Vue({
             { text: 'Cutive Mono', value: "'Cutive Mono', monospace"}
         ],
         undoHistory: [],
-        redoHistory: []
+        redoHistory: [],
+        bgImage: ""
     },
     watch: {
         boxes: function () {

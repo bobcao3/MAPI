@@ -81,9 +81,9 @@
                                 v-on:click="deleteSelected"
                             >delete_outline</i></a>
                         </li>
-                        <li>
-                            <i class = "material-icons"
-                            >photo_library</i>
+                        <li class="upload-wrapper">
+                            <input type="file" id="fileInput" v-on:change="uploadPicture"/>
+                            <i class="material-icons">photo_library</i>        
                         </li>
                         <!--
                         <li>

@@ -123,3 +123,16 @@ html, body {
 .select {
     -moz-user-select: text; -webkit-user-select: text; -ms-user-select:text; user-select:text; -o-user-select:text;
 }
+
+.upload-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.upload-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
