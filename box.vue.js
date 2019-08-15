@@ -45,7 +45,6 @@ Vue.component('box', {
         },
         isImmediateFather: (i) => {
             if (!i.editingState.selected) return true;
-            
         }
     },
     template: `
@@ -61,7 +60,7 @@ Vue.component('box', {
                 height: boxdata.size.y + 'px',
                 backgroundColor: boxdata.color,
                 color: boxdata.textColor,
-                overflow: isSelectedCascaded ? 'visible' : 'hidden',
+                overflow: isSelectedCascaded || editingState.showAll ? 'visible' : 'hidden',
                 backgroundImage: boxdata.bgImage ? 'url(' + boxdata.bgImage + ')' : '',
                 backgroundSize: boxdata.size.x + 'px ' + boxdata.size.y + 'px'
             }">

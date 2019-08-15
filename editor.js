@@ -187,6 +187,9 @@ let graph = new Vue({
             // Read in the image file as a data URL.
             console.log(reader.readAsDataURL(event.target.files[0]));
 
+        },
+        toggleAll: function(event) {
+            this.editingState.showAll = !this.editingState.showAll;
         }
     },
     data: {
@@ -195,7 +198,8 @@ let graph = new Vue({
         editingState: {
             selected: undefined,
             selectedText: false,
-            creatingBox: false
+            creatingBox: false,
+            showAll: false
         },
         savedData: "",
         loadData: "",

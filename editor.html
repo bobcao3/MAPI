@@ -69,7 +69,13 @@
                                 v-bind:class="{ toggled : editingState.creatingBox }"
                             >crop_5_4</i>
                         </li>
-                        <!--<li><i class="material-icons">photo_library</i></li>-->
+                        <li>
+                            <i
+                                class="material-icons"
+                                v-on:click="toggleAll"
+                                v-bind:class="{ toggled : editingState.showAll }"
+                            >layers</i>
+                        </li>
                     </ul>
                 </div>
                 <div class="uk-navbar-right">
