@@ -49,9 +49,9 @@ export default {
         onPointerMove: function(event) {
             if (this.onDragging && this.pointerId == event.pointerId) {
                 let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el;
-                let box = this.$el.getBoundingClientRect();
-                let scalex = this.$el.offsetWidth / box.width / this.scale.x;
-                let scaley = this.$el.offsetHeight / box.height / this.scale.y;
+                let box = element.getBoundingClientRect();
+                let scalex = element.offsetWidth / box.width;
+                let scaley = element.offsetHeight / box.height;
 
                 let dx = (event.clientX - this.pointerStart.x) * scalex;
                 let dy = (event.clientY - this.pointerStart.y) * scaley;

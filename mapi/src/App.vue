@@ -57,7 +57,7 @@ export default {
     };
   },
   methods: {
-    updateBackground: function(event) {
+    updateBackground: function() {
       let data = document.getElementById("graph-canvas").__vue__;
       let bg = document.getElementById("graph-canvas");
       bg.style.setProperty("--bg-offset-x", data.anchor.x + 'px');
