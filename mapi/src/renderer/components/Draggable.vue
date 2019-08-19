@@ -98,6 +98,14 @@ export default {
         this.onDragging = false
         this.$emit('v-dragend')
       }
+    },
+    getLocalXY (viewportX, viewportY) {
+      let target = this.infiniteSize ? this.$refs.transformAnchor : this.$el
+      let boxRectangle = target.getBoundingClientRect()
+      let localX = (viewportX - boxRectangle.left) / this.scale.x
+      let localY = (viewportY - boxRectangle.top) / this.scale.y
+
+      return {x: localX, y: localY}
     }
   },
   mounted: function () {

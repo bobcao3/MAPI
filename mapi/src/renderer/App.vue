@@ -1,7 +1,8 @@
 <template>
-  <div id="app">
+  <div id="app" v-on:wheel="onwheel">
     <draggable
       id="graph-canvas"
+      ref="canvas"
       v-bind:infiniteSize="true"
       v-on:v-dragmove="updateBackground"
       v-on:v-select="editingState.selected = undefined"
@@ -15,7 +16,7 @@
       />
     </draggable>
 
-    <div class="fileTooltip">{{ editingState.file }}</div>
+    <div class="fileTooltip non-select">{{ editingState.file }}</div>
 
     <nav
       class="uk-navbar-container non-select uk-light"
@@ -229,7 +230,8 @@ export default {
         selected: undefined,
         isMovingWindow: false,
         windowBounds: currentWindow.getBounds(),
-        file: undefined
+        file: undefined,
+        zoomLevel: 1.0
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
@@ -309,6 +311,41 @@ export default {
 
         this.editingState.file = fileNames[0]
       })
+    },
+    onwheel: function (event) {
+      event.preventDefault()
+
+      const wheelDelta = 0.001
+      let canvas = this.$refs.canvas
+
+      if (event.ctrlKey) {
+        let delta = event.deltaY
+        let zoomLevelPrev = this.editingState.zoomLevel
+        if (delta > 0) {
+          this.editingState.zoomLevel /= 1.0 + wheelDelta * delta
+        } else {
+          this.editingState.zoomLevel *= 1.0 - wheelDelta * delta
+        }
+
+        let pos = canvas.getLocalXY(event.clientX, event.clientY)
+
+        let x = canvas.anchor.x
+        let y = canvas.anchor.y
+
+        x += (x + pos.x) * (zoomLevelPrev - this.editingState.zoomLevel) / this.editingState.zoomLevel
+        y += (y + pos.y) * (zoomLevelPrev - this.editingState.zoomLevel) / this.editingState.zoomLevel
+
+        canvas.anchor.x = x
+        canvas.anchor.y = y
+
+        canvas.scale.x = this.editingState.zoomLevel
+        canvas.scale.y = this.editingState.zoomLevel
+      } else {
+        canvas.anchor.x -= event.deltaX / this.editingState.zoomLevel
+        canvas.anchor.y -= event.deltaY / this.editingState.zoomLevel
+      }
+
+      this.updateBackground()
     }
   },
   components: {
