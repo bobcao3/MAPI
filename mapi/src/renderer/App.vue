@@ -94,6 +94,7 @@
 
 <style lang="less">
 @import "~uikit/src/less/uikit.less";
+@import '~material-icons/iconfont/material-icons.css';
 </style>
 
 <style>
