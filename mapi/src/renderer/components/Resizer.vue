@@ -18,6 +18,7 @@
   outline-color: rgb(0, 187, 255);
   outline-style: dashed;
   outline-width: 3px;
+  pointer-events: none;
 }
 
 .handle {
@@ -29,6 +30,7 @@
   left: 0px;
   top: 0px;
   position: absolute;
+  pointer-events: auto;
 }
 </style>
 
@@ -65,8 +67,8 @@ export default {
       let scalex = element.offsetWidth / box.width
       let scaley = element.offsetHeight / box.height
 
-      let dx = (event.clientX - data.pointerStart.x) / scalex
-      let dy = (event.clientY - data.pointerStart.y) / scaley
+      let dx = (event.clientX - data.pointerStart.x) * scalex
+      let dy = (event.clientY - data.pointerStart.y) * scaley
 
       let x = this.anchorStart.x
       let y = this.anchorStart.y

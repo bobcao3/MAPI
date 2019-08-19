@@ -2,7 +2,7 @@
   <div
     v-bind:class="{ infiniteSize: infiniteSize }"
     v-bind:style="{ transform: !infiniteSize && 'scale3d(' + scale.x + ', ' + scale.y + ', 1) translate3d(' + anchor.x + 'px, ' + anchor.y + 'px, ' + layerZ + 'px)' }"
-    v-on:mousedown.stop="onPointerDown"
+    v-on:pointerdown.stop="onPointerDown"
     class="draggable"
   >
     <div
@@ -113,16 +113,16 @@ export default {
     }
   },
   mounted: function () {
-    document.addEventListener('mousemove', this.onPointerMove)
-    document.addEventListener('mouseup', this.onPointerUp)
+    document.addEventListener('pointermove', this.onPointerMove)
+    document.addEventListener('pointerup', this.onPointerUp)
   },
   updated: function () {
     let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
     roundCssTransformMatrix(element)
   },
   beforeDestroy: function () {
-    document.removeEventListener('mousemove', this.onPointerMove)
-    document.removeEventListener('mouseup', this.onPointerUp)
+    document.removeEventListener('pointermove', this.onPointerMove)
+    document.removeEventListener('pointerup', this.onPointerUp)
   }
 }
 </script>
