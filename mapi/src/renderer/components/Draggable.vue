@@ -19,6 +19,24 @@
 </template>
 
 <script>
+function roundCssTransformMatrix (el) {
+  // el.style.transform = ""; //resets the redifined matrix to allow recalculation, the original style should be defined in the class not inline.
+  var mx = window.getComputedStyle(el, null) // gets the current computed style
+  mx =
+    mx.getPropertyValue('-webkit-transform') ||
+    mx.getPropertyValue('-moz-transform') ||
+    mx.getPropertyValue('-ms-transform') ||
+    mx.getPropertyValue('-o-transform') ||
+    mx.getPropertyValue('transform') ||
+    false
+  var values = mx.replace(/ |\(|\)|matrix/g, '').split(',')
+  for (var v in values) {
+    values[v] = v > 4 ? Math.ceil(values[v]) : values[v]
+  }
+
+  el.style.transform = 'matrix(' + values.join() + ')'
+}
+
 export default {
   props: ['infiniteSize', 'initialScale', 'initialAnchor'],
   data: function () {
@@ -57,6 +75,7 @@ export default {
       this.pointerStart.x = event.clientX
       this.pointerStart.y = event.clientY
       this.pointerId = event.pointerId
+      this.$emit('v-select')
     },
     onPointerMove: function (event) {
       if (this.onDragging && this.pointerId === event.pointerId) {
@@ -79,6 +98,11 @@ export default {
         this.onPointerMove(event)
         this.onDragging = false
         this.$emit('v-dragend')
+
+        this.$nextTick(() => {
+          let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
+          roundCssTransformMatrix(element)
+        })
       }
     }
   },

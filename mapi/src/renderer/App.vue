@@ -4,9 +4,10 @@
       id="graph-canvas"
       v-bind:infiniteSize="true"
       v-on:v-dragmove="updateBackground"
+      v-on:v-select="editingState.selected = undefined"
       v-bind:initialScale="{x:1.0, y:1.0}"
     >
-      <box v-bind:boxdata="{ anchor: { x: 50, y: 100 }, size: { x: 100, y: 70 }}"></box>
+      <box v-for='box in boxes' v-bind:key='box.id' v-bind:editingState='editingState' v-bind:boxdata="box"/>
     </draggable>
 
     <nav class="uk-navbar-container non-select" id="navBar" uk-navbar>
@@ -30,7 +31,7 @@
         </ul>
       </div>
       <div class="uk-navbar-right">
-        <ul class="uk-navbar-nav">
+        <ul class="uk-navbar-nav" v-if="editingState.selected">
           <!-- Editing options -->
           <li>
             <i class="material-icons">delete_outline</i>
@@ -136,16 +137,21 @@ body {
 <script>
 import draggable from '@/components/Draggable.vue'
 import box from '@/components/Box.vue'
+import uuidv4 from 'uuid/v4'
 
 require('@/assets/iconButtons.css')
 require('@/assets/navBar.css')
 
+console.log(uuidv4())
+
 export default {
   data: function () {
     return {
-      boxes: [],
+      boxes: [
+        { id: uuidv4(), anchor: { x: 50, y: 100 }, size: { x: 100, y: 70 }, font: "'Roboto', sans-serif", fontSize: '16' }
+      ],
       editingState: {
-        selected: {}
+        selected: undefined
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },

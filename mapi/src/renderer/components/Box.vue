@@ -1,7 +1,7 @@
 <template>
-  <draggable class="box" v-bind:initialAnchor="boxdata.anchor">
+  <draggable class="box" v-bind:initialAnchor="boxdata.anchor" v-on:v-select="editingState.selected = boxdata">
     <textarea
-      v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px' } "
+      v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px', fontFamily: boxdata.font, fontSize: boxdata.fontSize + 'px' } "
       v-model="text"
     ></textarea>
   </draggable>
@@ -11,7 +11,7 @@
 import draggable from '@/components/Draggable.vue'
 
 export default {
-  props: ['boxdata'],
+  props: ['boxdata', 'editingState'],
   data: function () {
     return {
       text: ''
