@@ -26,7 +26,12 @@ function createWindow () {
     frame: false,
     titleBarStyle: 'hidden',
     minWidth: 1024,
-    minHeight: 600
+    minHeight: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      webSecurity: false
+    }
   })
 
   mainWindow.loadURL(winURL)

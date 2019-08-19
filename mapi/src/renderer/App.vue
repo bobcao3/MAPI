@@ -52,9 +52,8 @@
           <li>
             <i class="material-icons">delete_outline</i>
           </li>
-          <li class="upload-wrapper">
-            <input type="file" id="fileInput" />
-            <i class="material-icons">photo_library</i>
+          <li>
+            <i class="material-icons" v-on:click="setImage">photo_library</i>
           </li>
           <li>
             <i
@@ -91,17 +90,10 @@
           <li>
             <i class="material-icons">format_color_fill_24px</i>
             <!--This is the UIkit dropdown  -->
-            <div id="colorbar" class="uk-navbar-dropdown color-pallete">
-              <div>
-                <button class="uk-button color-button" style="background-color: #FF8080;"></button>
-                <button class="uk-button color-button" style="background-color: #FFC580;"></button>
-                <button class="uk-button color-button" style="background-color: #FFE380;"></button>
-                <button class="uk-button color-button" style="background-color: #92FF80;"></button>
-                <button class="uk-button color-button" style="background-color: #80E1FF;"></button>
-                <button class="uk-button color-button" style="background-color: #8A80FF;"></button>
-                <button class="uk-button color-button" style="background-color: #ED80FF;"></button>
-                <button class="uk-button color-button" style="background-color: #FF80AB;"></button>
-              </div>
+            <div id="colorpicker" class="uk-navbar-dropdown">
+              <sketch-colorpicker :value="editingState.selected.color" @input="updateColor" :presetColors="[
+                '#FF8080', '#FFC580', '#FFE380', '#92FF80', '#80E1FF', '#8A80FF', '#ED80FF', '#FF80AB'
+              ]"></sketch-colorpicker>
             </div>
           </li>
           <!-- Editing options -->
@@ -195,9 +187,13 @@ import draggable from '@/components/Draggable.vue'
 import box from '@/components/Box.vue'
 import uuidv4 from 'uuid/v4'
 import UIkit from 'uikit'
+import path from 'path'
+import PSON from 'pson'
+import fs from 'fs'
+import { Sketch } from 'vue-color'
+import slash from 'slash'
 
-const PSON = require('pson')
-const fs = require('fs')
+console.log(path)
 
 const { remote } = require('electron')
 const { dialog } = require('electron').remote
@@ -223,7 +219,8 @@ export default {
           fontSize: '16',
           color: '#FF8080',
           bold: false,
-          italic: false
+          italic: false,
+          image: undefined
         }
       ],
       editingState: {
@@ -259,9 +256,29 @@ export default {
       bg.style.setProperty('--scale-x', data.scale.x)
       bg.style.setProperty('--scale-y', data.scale.y)
     },
+    updateColor: function (color) {
+      let c = color.rgba
+      this.editingState.selected.color = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
+    },
     closeApp: function () {
       console.log('close')
       currentWindow.close()
+    },
+    setImage: function () {
+      dialog.showOpenDialog((fileNames) => {
+        if (fileNames === undefined) {
+          console.log('No file selected')
+          return
+        }
+
+        fs.readFile(fileNames[0], (err, data) => {
+          if (err) {
+            UIkit.notification({ message: 'An error ocurred loading the file ' + err.message, pos: 'bottom-left', status: 'danger' })
+          }
+
+          this.editingState.selected.image = 'url("file://' + slash(fileNames[0]) + '")'
+        })
+      })
     },
     saveFile: function () {
       let dataBuf = pson.encode(this.boxes).toBuffer()
@@ -303,7 +320,7 @@ export default {
         // fileName is a string that contains the path and filename created in the save file dialog.
         fs.readFile(fileNames[0], (err, data) => {
           if (err) {
-            alert('An error ocurred loading the file ' + err.message)
+            UIkit.notification({ message: 'An error ocurred loading the file ' + err.message, pos: 'bottom-left', status: 'danger' })
           }
 
           this.boxes = pson.decode(data)
@@ -350,7 +367,8 @@ export default {
   },
   components: {
     draggable,
-    box
+    box,
+    'sketch-colorpicker': Sketch
   },
   mounted: function () {
     this.updateBackground()

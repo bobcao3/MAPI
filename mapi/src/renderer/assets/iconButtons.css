@@ -22,16 +22,3 @@
 .material-icons:hover {
     color: rgba(255, 255, 255, 0.8);
 }
-
-.upload-wrapper {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-}
-
-.upload-wrapper input[type=file] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-}

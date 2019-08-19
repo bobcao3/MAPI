@@ -34,12 +34,6 @@
   -webkit-app-region: no-drag;
 }
 
-.color-pallete {
-  width: 340px;
-}
-
-.color-button {
-  height: 40px;
-  width: 15px;
-  margin: 0.3em;
+#colorpicker {
+  background-color: transparent;
 }

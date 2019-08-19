@@ -13,6 +13,8 @@ Vue.config.productionTip = false
 
 UIkit.use(Icons)
 
+Vue.prototype.$imagePool = {}
+
 /* eslint-disable no-new */
 new Vue({
   components: { App },

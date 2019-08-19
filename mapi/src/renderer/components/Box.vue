@@ -4,7 +4,7 @@
     v-bind:initialAnchor="boxdata.anchor"
     v-on:v-select="editingState.selected = boxdata"
     v-bind:class=" { selected: editingState.selected === boxdata } "
-    v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px', backgroundColor: boxdata.color } "
+    v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px', backgroundColor: boxdata.color, backgroundImage: boxdata.image, backgroundSize: boxdata.size.x + 'px ' + boxdata.size.y + 'px' } "
   >
     <textarea
       v-bind:style=" { fontFamily: boxdata.font, fontSize: boxdata.fontSize + 'px', fontWeight: boxdata.bold ? 'bold' : 'normal', fontStyle: boxdata.italic ? 'italic' : 'normal' } "
