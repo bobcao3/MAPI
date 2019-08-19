@@ -7,11 +7,21 @@
       v-on:v-select="editingState.selected = undefined"
       v-bind:initialScale="{x:1.0, y:1.0}"
     >
-      <box v-for='box in boxes' v-bind:key='box.id' v-bind:editingState='editingState' v-bind:boxdata="box"/>
+      <box
+        v-for="box in boxes"
+        v-bind:key="box.id"
+        v-bind:editingState="editingState"
+        v-bind:boxdata="box"
+      />
     </draggable>
 
-    <nav class="uk-navbar-container non-select" id="navBar" uk-navbar>
+    <nav
+      class="uk-navbar-container non-select uk-light"
+      id="navBar"
+      uk-navbar
+    >
       <div class="uk-navbar-left">
+        <a class="uk-navbar-item uk-logo">MAPI</a>
         <ul class="uk-navbar-nav">
           <li>
             <i class="material-icons">folder_open</i>
@@ -86,6 +96,9 @@
           <li>
             <i class="material-icons">save_alt</i>
           </li>
+          <li>
+            <i class="material-icons" v-on:click="closeApp">close</i>
+          </li>
         </ul>
       </div>
     </nav>
@@ -94,7 +107,7 @@
 
 <style lang="less">
 @import "~uikit/src/less/uikit.less";
-@import '~material-icons/iconfont/material-icons.css';
+@import "~material-icons/iconfont/material-icons.css";
 </style>
 
 <style>
@@ -132,6 +145,30 @@ body {
   overscroll-behavior: contain;
   overflow: hidden;
 }
+
+#app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.non-select {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+}
+
+.select {
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -o-user-select: text;
+}
 </style>
 
 <script>
@@ -139,19 +176,30 @@ import draggable from '@/components/Draggable.vue'
 import box from '@/components/Box.vue'
 import uuidv4 from 'uuid/v4'
 
+const { remote } = require('electron')
+
 require('@/assets/iconButtons.css')
 require('@/assets/navBar.css')
 
-console.log(uuidv4())
+let currentWindow = remote.getCurrentWindow()
+currentWindow.setMenu(null)
 
 export default {
   data: function () {
     return {
       boxes: [
-        { id: uuidv4(), anchor: { x: 50, y: 100 }, size: { x: 100, y: 70 }, font: "'Roboto', sans-serif", fontSize: '16' }
+        {
+          id: uuidv4(),
+          anchor: { x: 50, y: 100 },
+          size: { x: 100, y: 70 },
+          font: "'Roboto', sans-serif",
+          fontSize: '16'
+        }
       ],
       editingState: {
-        selected: undefined
+        selected: undefined,
+        isMovingWindow: false,
+        windowBounds: currentWindow.getBounds()
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
@@ -178,6 +226,10 @@ export default {
       bg.style.setProperty('--bg-offset-y', data.anchor.y + 'px')
       bg.style.setProperty('--scale-x', data.scale.x)
       bg.style.setProperty('--scale-y', data.scale.y)
+    },
+    closeApp: function () {
+      console.log('close')
+      currentWindow.close()
     }
   },
   components: {

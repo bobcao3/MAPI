@@ -4,6 +4,7 @@
     margin-right: 0.3em;
     width: 1em;
     transition: color 0.1s ease;
+    cursor: default;
 }
 
 .material-icons:active {
