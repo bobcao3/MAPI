@@ -21,7 +21,6 @@
           <li>
             <i class="material-icons">redo</i>
           </li>
-          <!-- To bind a callback to an event, use v-on:event="callback" -->
           <li>
             <i class="material-icons">crop_5_4</i>
           </li>
