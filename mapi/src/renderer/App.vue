@@ -93,7 +93,7 @@
 </template>
 
 <style lang="less">
-@import "../../node_modules/uikit/src/less/uikit.less";
+@import "~uikit/src/less/uikit.less";
 </style>
 
 <style>
@@ -134,16 +134,11 @@ body {
 </style>
 
 <script>
-
-import UIkit from 'uikit'
-import Icons from 'uikit/dist/js/uikit-icons'
-
 import draggable from '@/components/Draggable.vue'
 import box from '@/components/Box.vue'
 
 require('@/assets/iconButtons.css')
 require('@/assets/navBar.css')
-UIkit.use(Icons)
 
 export default {
   data: function () {
