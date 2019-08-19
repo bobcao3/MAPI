@@ -1,10 +1,100 @@
 <template>
   <div id="app">
-    <draggable id="graph-canvas" v-bind:infiniteSize="true" v-on:v-dragmove="updateBackground" v-bind:initialScale="{x:1.5, y:3.0}">
-      <draggable></draggable>
+    <draggable
+      id="graph-canvas"
+      v-bind:infiniteSize="true"
+      v-on:v-dragmove="updateBackground"
+      v-bind:initialScale="{x:1.0, y:1.0}"
+    >
+      <box v-bind:boxdata="{ anchor: { x: 50, y: 100 }, size: { x: 100, y: 70 }}"></box>
     </draggable>
+
+    <nav class="uk-navbar-container non-select" id="navBar" uk-navbar>
+      <div class="uk-navbar-left">
+        <ul class="uk-navbar-nav">
+          <li>
+            <i class="material-icons">folder_open</i>
+          </li>
+          <li>
+            <i class="material-icons">undo</i>
+          </li>
+          <li>
+            <i class="material-icons">redo</i>
+          </li>
+          <!-- To bind a callback to an event, use v-on:event="callback" -->
+          <li>
+            <i class="material-icons">crop_5_4</i>
+          </li>
+          <li>
+            <i class="material-icons">layers</i>
+          </li>
+        </ul>
+      </div>
+      <div class="uk-navbar-right">
+        <ul class="uk-navbar-nav">
+          <!-- Editing options -->
+          <li>
+            <i class="material-icons">delete_outline</i>
+          </li>
+          <li class="upload-wrapper">
+            <input type="file" id="fileInput" />
+            <i class="material-icons">photo_library</i>
+          </li>
+          <li>
+            <i class="material-icons">format_bold</i>
+          </li>
+          <li>
+            <i class="material-icons">format_italic</i>
+          </li>
+          <li>
+            <select class="uk-select navbar-selections" v-model="editingState.selected.font">
+              <option
+                v-for="option in fontOptions"
+                v-bind:value="option.value"
+                v-bind:key="option.value"
+              >{{ option.text }}</option>
+            </select>
+          </li>
+          <li>
+            <select class="uk-select navbar-selections" v-model="editingState.selected.fontSize">
+              <option
+                v-for="option in textSizeOptions"
+                v-bind:value="option.value"
+                v-bind:key="option.value"
+              >{{ option.text }}</option>
+            </select>
+          </li>
+          <li>
+            <i class="material-icons">format_color_fill_24px</i>
+            <!--This is the UIkit dropdown  -->
+            <div id="colorbar" class="uk-navbar-dropdown color-pallete">
+              <div>
+                <button class="uk-button color-button" style="background-color: #FF8080;"></button>
+                <button class="uk-button color-button" style="background-color: #FFC580;"></button>
+                <button class="uk-button color-button" style="background-color: #FFE380;"></button>
+                <button class="uk-button color-button" style="background-color: #92FF80;"></button>
+                <button class="uk-button color-button" style="background-color: #80E1FF;"></button>
+                <button class="uk-button color-button" style="background-color: #8A80FF;"></button>
+                <button class="uk-button color-button" style="background-color: #ED80FF;"></button>
+                <button class="uk-button color-button" style="background-color: #FF80AB;"></button>
+              </div>
+            </div>
+          </li>
+          <!-- Editing options -->
+        </ul>
+        <ul class="uk-navbar-nav">
+          <li>
+            <i class="material-icons">save_alt</i>
+          </li>
+        </ul>
+      </div>
+    </nav>
   </div>
 </template>
+
+<style lang="less">
+@import "../node_modules/uikit/src/less/uikit.less";
+</style>
 
 <style>
 #graph-canvas {
@@ -44,34 +134,57 @@ body {
 </style>
 
 <script>
-import UIkit from 'uikit';
-import Icons from 'uikit/dist/js/uikit-icons';
+
+require("@/assets/iconButtons.css")
+require("@/assets/navBar.css")
+
+import UIkit from "uikit";
+import Icons from "uikit/dist/js/uikit-icons";
 UIkit.use(Icons);
 
 import draggable from "@/components/Draggable.vue";
+import box from "@/components/Box.vue";
 
 export default {
   data: function() {
     return {
-      boxes: []
+      boxes: [],
+      editingState: {
+        selected: {}
+      },
+      textSizeOptions: [
+        { text: "Main text", value: "16" },
+        { text: "Head 1", value: "32" },
+        { text: "Head 2", value: "24" }
+      ],
+      fontOptions: [
+        { text: "Roboto", value: "'Roboto', sans-serif" },
+        { text: "Lato", value: "'Lato', sans-serif" },
+        { text: "Garamond", value: "'EB Garamond', serif" },
+        { text: "Times New Roman", value: "'Times New Roman', Times, serif" },
+        { text: "Long Cang", value: "'Long Cang', cursive" },
+        { text: "Comfortaa", value: "'Comfortaa', cursive" },
+        { text: "Roboto Mono", value: "'Roboto Mono', monospace" },
+        { text: "Cutive Mono", value: "'Cutive Mono', monospace" }
+      ]
     };
   },
   methods: {
     updateBackground: function() {
       let data = document.getElementById("graph-canvas").__vue__;
       let bg = document.getElementById("graph-canvas");
-      bg.style.setProperty("--bg-offset-x", data.anchor.x + 'px');
-      bg.style.setProperty("--bg-offset-y", data.anchor.y + 'px');
+      bg.style.setProperty("--bg-offset-x", data.anchor.x + "px");
+      bg.style.setProperty("--bg-offset-y", data.anchor.y + "px");
       bg.style.setProperty("--scale-x", data.scale.x);
       bg.style.setProperty("--scale-y", data.scale.y);
     }
   },
   components: {
-    draggable
+    draggable,
+    box
+  },
+  mounted: function() {
+    this.updateBackground();
   }
 };
 </script>
-
-<style lang="less">
-@import "../node_modules/uikit/src/less/uikit.less";
-</style>

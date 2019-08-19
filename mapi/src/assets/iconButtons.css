@@ -1,0 +1,36 @@
+.material-icons {
+    color: white;
+    margin-left: 0.3em;
+    margin-right: 0.3em;
+    width: 1em;
+    transition: color 0.1s ease;
+}
+
+.material-icons:active {
+    color: #ff80ab;
+}
+
+.material-icons.toggled {
+    color: #ff80ab;
+}
+
+.material-icons.toggled:hover {
+    color: rgb(195, 97, 130);
+}
+
+.material-icons:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.upload-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.upload-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}

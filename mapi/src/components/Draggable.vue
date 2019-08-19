@@ -5,23 +5,24 @@
         v-on:mousedown.stop="onPointerDown"
         class="draggable"
     >
-        <div ref="transformAnchor" class="transformAnchor" v-bind:style="{ transform: infiniteSize && 'scale3d(' + scale.x + ', ' + scale.y + ', 1) translate3d(' + anchor.x + 'px, ' + anchor.y + 'px, ' + layerZ + 'px)' }">
-            HAHA
+        <div v-if="infiniteSize" ref="transformAnchor" class="draggable transformAnchor" v-bind:style="{ transform: 'scale3d(' + scale.x + ', ' + scale.y + ', 1) translate3d(' + anchor.x + 'px, ' + anchor.y + 'px, ' + layerZ + 'px)' }">
+            transform anchor
             <slot></slot>
         </div>
+        <slot v-if="!infiniteSize"></slot>
     </div>
 </template>
 
 <script>
 export default {
-    props: ['infiniteSize', 'initialScale'],
+    props: ['infiniteSize', 'initialScale', 'initialAnchor'],
     data: function () {
         return {
-            anchor: {
+            anchor: this.initialAnchor ? this.initialAnchor : {
                 x: 15,
                 y: 15
             },
-            anchorStart: {
+            anchorStart: this.initialAnchor ? { ... this.initialAnchor} : {
                 x: 15,
                 y: 15
             },
@@ -93,10 +94,13 @@ export default {
 .draggable {
     outline: red solid 1px;
     transform-origin: top left;
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+    line-height: 0.0;
 }
 
-.draggable .transformAnchor {
+.transformAnchor {
     outline: green solid 1px;
-    display: inline-block;
 }
 </style>
