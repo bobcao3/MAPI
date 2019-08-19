@@ -1,6 +1,7 @@
 <template>
   <draggable
     class="box"
+    v-bind:id="boxdata.id"
     v-bind:initialAnchor="boxdata.anchor"
     v-on:v-select="editingState.selected = boxdata"
     v-bind:class=" { selected: editingState.selected === boxdata } "
@@ -54,12 +55,5 @@ export default {
   border-style: solid;
   border-width: calc(3px / var(--scale));
   border-color: rgba(255,255,255,0.2);
-}
-
-.box.selected {
-  box-shadow: 0em 0.0em calc(2.0em / var(--scale)) rgb(82, 206, 255);
-  outline-color: rgb(0, 187, 255);
-  outline-style: dashed;
-  outline-width: calc(2px / var(--scale));
 }
 </style>

@@ -16,6 +16,8 @@
       />
     </draggable>
 
+    <resizer v-if="editingState.selected" v-bind:boxdata="editingState.selected" v-bind:canvas="$refs.canvas.$data"></resizer>
+
     <div class="fileTooltip non-select">{{ editingState.file }}</div>
 
     <nav
@@ -185,6 +187,8 @@ body {
 <script>
 import draggable from '@/components/Draggable.vue'
 import box from '@/components/Box.vue'
+import resizer from '@/components/Resizer.vue'
+
 import uuidv4 from 'uuid/v4'
 import UIkit from 'uikit'
 import path from 'path'
@@ -368,6 +372,7 @@ export default {
   components: {
     draggable,
     box,
+    resizer,
     'sketch-colorpicker': Sketch
   },
   mounted: function () {

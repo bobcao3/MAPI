@@ -37,20 +37,20 @@ function roundCssTransformMatrix (el) {
 }
 
 export default {
-  props: ['infiniteSize', 'initialScale', 'initialAnchor'],
+  props: ['infiniteSize', 'initialScale', 'initialAnchor', 'externalHandle'],
   data: function () {
     return {
       anchor: this.initialAnchor
         ? this.initialAnchor
         : {
-          x: 15,
-          y: 15
+          x: 0,
+          y: 0
         },
       anchorStart: this.initialAnchor
         ? { ...this.initialAnchor }
         : {
-          x: 15,
-          y: 15
+          x: 0,
+          y: 0
         },
       pointerStart: {
         x: 0,
@@ -74,22 +74,26 @@ export default {
       this.pointerStart.x = event.clientX
       this.pointerStart.y = event.clientY
       this.pointerId = event.pointerId
-      this.$emit('v-select')
+      this.$emit('v-select', event)
     },
     onPointerMove: function (event) {
       if (this.onDragging && this.pointerId === event.pointerId) {
-        let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
-        let box = element.getBoundingClientRect()
-        let scalex = element.offsetWidth / box.width
-        let scaley = element.offsetHeight / box.height
+        if (this.externalHandle) {
+          this.$emit('v-dragmove', event, this.$data)
+        } else {
+          let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
+          let box = element.getBoundingClientRect()
+          let scalex = element.offsetWidth / box.width
+          let scaley = element.offsetHeight / box.height
 
-        let dx = (event.clientX - this.pointerStart.x) * scalex
-        let dy = (event.clientY - this.pointerStart.y) * scaley
+          let dx = (event.clientX - this.pointerStart.x) * scalex
+          let dy = (event.clientY - this.pointerStart.y) * scaley
 
-        this.anchor.x = this.anchorStart.x + dx
-        this.anchor.y = this.anchorStart.y + dy
+          this.anchor.x = this.anchorStart.x + dx
+          this.anchor.y = this.anchorStart.y + dy
 
-        this.$emit('v-dragmove')
+          this.$emit('v-dragmove')
+        }
       }
     },
     onPointerUp: function (event) {
