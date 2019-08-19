@@ -93,7 +93,7 @@
 </template>
 
 <style lang="less">
-@import "../node_modules/uikit/src/less/uikit.less";
+@import "../../node_modules/uikit/src/less/uikit.less";
 </style>
 
 <style>
@@ -135,56 +135,56 @@ body {
 
 <script>
 
-require("@/assets/iconButtons.css")
-require("@/assets/navBar.css")
+import UIkit from 'uikit'
+import Icons from 'uikit/dist/js/uikit-icons'
 
-import UIkit from "uikit";
-import Icons from "uikit/dist/js/uikit-icons";
-UIkit.use(Icons);
+import draggable from '@/components/Draggable.vue'
+import box from '@/components/Box.vue'
 
-import draggable from "@/components/Draggable.vue";
-import box from "@/components/Box.vue";
+require('@/assets/iconButtons.css')
+require('@/assets/navBar.css')
+UIkit.use(Icons)
 
 export default {
-  data: function() {
+  data: function () {
     return {
       boxes: [],
       editingState: {
         selected: {}
       },
       textSizeOptions: [
-        { text: "Main text", value: "16" },
-        { text: "Head 1", value: "32" },
-        { text: "Head 2", value: "24" }
+        { text: 'Main text', value: '16' },
+        { text: 'Head 1', value: '32' },
+        { text: 'Head 2', value: '24' }
       ],
       fontOptions: [
-        { text: "Roboto", value: "'Roboto', sans-serif" },
-        { text: "Lato", value: "'Lato', sans-serif" },
-        { text: "Garamond", value: "'EB Garamond', serif" },
-        { text: "Times New Roman", value: "'Times New Roman', Times, serif" },
-        { text: "Long Cang", value: "'Long Cang', cursive" },
-        { text: "Comfortaa", value: "'Comfortaa', cursive" },
-        { text: "Roboto Mono", value: "'Roboto Mono', monospace" },
-        { text: "Cutive Mono", value: "'Cutive Mono', monospace" }
+        { text: 'Roboto', value: "'Roboto', sans-serif" },
+        { text: 'Lato', value: "'Lato', sans-serif" },
+        { text: 'Garamond', value: "'EB Garamond', serif" },
+        { text: 'Times New Roman', value: "'Times New Roman', Times, serif" },
+        { text: 'Long Cang', value: "'Long Cang', cursive" },
+        { text: 'Comfortaa', value: "'Comfortaa', cursive" },
+        { text: 'Roboto Mono', value: "'Roboto Mono', monospace" },
+        { text: 'Cutive Mono', value: "'Cutive Mono', monospace" }
       ]
-    };
+    }
   },
   methods: {
-    updateBackground: function() {
-      let data = document.getElementById("graph-canvas").__vue__;
-      let bg = document.getElementById("graph-canvas");
-      bg.style.setProperty("--bg-offset-x", data.anchor.x + "px");
-      bg.style.setProperty("--bg-offset-y", data.anchor.y + "px");
-      bg.style.setProperty("--scale-x", data.scale.x);
-      bg.style.setProperty("--scale-y", data.scale.y);
+    updateBackground: function () {
+      let data = document.getElementById('graph-canvas').__vue__
+      let bg = document.getElementById('graph-canvas')
+      bg.style.setProperty('--bg-offset-x', data.anchor.x + 'px')
+      bg.style.setProperty('--bg-offset-y', data.anchor.y + 'px')
+      bg.style.setProperty('--scale-x', data.scale.x)
+      bg.style.setProperty('--scale-y', data.scale.y)
     }
   },
   components: {
     draggable,
     box
   },
-  mounted: function() {
-    this.updateBackground();
+  mounted: function () {
+    this.updateBackground()
   }
-};
+}
 </script>
