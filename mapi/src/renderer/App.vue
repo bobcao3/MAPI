@@ -15,6 +15,8 @@
       />
     </draggable>
 
+    <div class="fileTooltip">{{ editingState.file }}</div>
+
     <nav
       class="uk-navbar-container non-select uk-light"
       id="navBar"
@@ -24,7 +26,10 @@
         <a class="uk-navbar-item uk-logo">MAPI</a>
         <ul class="uk-navbar-nav">
           <li>
-            <i class="material-icons">folder_open</i>
+            <i class="material-icons" v-on:click="loadFile">folder_open</i>
+          </li>
+          <li>
+            <i class="material-icons" v-on:click="saveFile">save</i>
           </li>
           <li>
             <i class="material-icons">undo</i>
@@ -102,9 +107,6 @@
         </ul>
         <ul class="uk-navbar-nav">
           <li>
-            <i class="material-icons">save_alt</i>
-          </li>
-          <li>
             <i class="material-icons" v-on:click="closeApp">close</i>
           </li>
         </ul>
@@ -119,6 +121,35 @@
 </style>
 
 <style>
+body {
+  overscroll-behavior: contain;
+  overflow: hidden;
+}
+
+.non-select {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+}
+
+.select {
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -o-user-select: text;
+}
+</style>
+
+<style scoped>
+.fileTooltip {
+  position: absolute;
+  left: 1em;
+  top: 4em;
+}
+
 #graph-canvas {
   /* This produces the grid background */
   position: absolute;
@@ -149,11 +180,6 @@
   background-position: var(--bg-offset-x-scaled) var(--bg-offset-y-scaled);
 }
 
-body {
-  overscroll-behavior: contain;
-  overflow: hidden;
-}
-
 #app {
   position: fixed;
   top: 0;
@@ -161,30 +187,22 @@ body {
   bottom: 0;
   right: 0;
 }
-
-.non-select {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -o-user-select: none;
-}
-
-.select {
-  -moz-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-  -o-user-select: text;
-}
 </style>
 
 <script>
 import draggable from '@/components/Draggable.vue'
 import box from '@/components/Box.vue'
 import uuidv4 from 'uuid/v4'
+import UIkit from 'uikit'
+
+const PSON = require('pson')
+const fs = require('fs')
 
 const { remote } = require('electron')
+const { dialog } = require('electron').remote
+
+var initialDictionary = ['id', 'anchor', 'size', 'font', 'fontSize', 'color', 'bold', 'italic']
+var pson = new PSON.StaticPair(initialDictionary)
 
 require('@/assets/iconButtons.css')
 require('@/assets/navBar.css')
@@ -210,7 +228,8 @@ export default {
       editingState: {
         selected: undefined,
         isMovingWindow: false,
-        windowBounds: currentWindow.getBounds()
+        windowBounds: currentWindow.getBounds(),
+        file: undefined
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
@@ -241,6 +260,55 @@ export default {
     closeApp: function () {
       console.log('close')
       currentWindow.close()
+    },
+    saveFile: function () {
+      let dataBuf = pson.encode(this.boxes).toBuffer()
+      if (this.editingState.file) {
+        fs.writeFile(this.editingState.file, dataBuf, (err) => {
+          if (err) {
+            UIkit.notification({ message: 'An error ocurred creating the file ' + err.message, pos: 'bottom-left', status: 'danger' })
+          }
+
+          UIkit.notification({ message: 'Your file is saved!', pos: 'bottom-left', status: 'success' })
+        })
+      } else {
+        dialog.showSaveDialog((fileName) => {
+          if (fileName === undefined) {
+            console.log('No file selected')
+            return
+          }
+
+          // fileName is a string that contains the path and filename created in the save file dialog.
+          fs.writeFile(fileName, dataBuf, (err) => {
+            if (err) {
+              UIkit.notification({ message: 'An error ocurred creating the file ' + err.message, pos: 'bottom-left', status: 'danger' })
+            }
+
+            UIkit.notification({ message: 'Your file is saved as ' + fileName, pos: 'bottom-left', status: 'success' })
+          })
+
+          this.editingState.file = fileName
+        })
+      }
+    },
+    loadFile: function () {
+      dialog.showOpenDialog((fileNames) => {
+        if (fileNames === undefined) {
+          console.log('No file selected')
+          return
+        }
+
+        // fileName is a string that contains the path and filename created in the save file dialog.
+        fs.readFile(fileNames[0], (err, data) => {
+          if (err) {
+            alert('An error ocurred loading the file ' + err.message)
+          }
+
+          this.boxes = pson.decode(data)
+        })
+
+        this.editingState.file = fileNames[0]
+      })
     }
   },
   components: {

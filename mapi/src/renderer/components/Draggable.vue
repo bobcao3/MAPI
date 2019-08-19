@@ -11,7 +11,6 @@
       class="draggable transformAnchor"
       v-bind:style="{ transform: 'scale3d(' + scale.x + ', ' + scale.y + ', 1) translate3d(' + anchor.x + 'px, ' + anchor.y + 'px, ' + layerZ + 'px)' }"
     >
-      transform anchor
       <slot></slot>
     </div>
     <slot v-if="!infiniteSize"></slot>

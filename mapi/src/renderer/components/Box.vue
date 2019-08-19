@@ -8,7 +8,7 @@
   >
     <textarea
       v-bind:style=" { fontFamily: boxdata.font, fontSize: boxdata.fontSize + 'px', fontWeight: boxdata.bold ? 'bold' : 'normal', fontStyle: boxdata.italic ? 'italic' : 'normal' } "
-      v-model="text"
+      v-model="boxdata.text"
     ></textarea>
   </draggable>
 </template>
@@ -39,6 +39,10 @@ export default {
   background-color: transparent;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: subpixel-antialiased;
+
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 
 .box {

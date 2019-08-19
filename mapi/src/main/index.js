@@ -34,6 +34,15 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.on('did-frame-finish-load', () => {
+      mainWindow.webContents.once('devtools-opened', () => {
+        mainWindow.focus()
+      })
+      mainWindow.webContents.openDevTools()
+    })
+  }
 }
 
 app.on('ready', createWindow)
