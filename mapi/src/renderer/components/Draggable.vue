@@ -98,17 +98,16 @@ export default {
         this.onPointerMove(event)
         this.onDragging = false
         this.$emit('v-dragend')
-
-        this.$nextTick(() => {
-          let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
-          roundCssTransformMatrix(element)
-        })
       }
     }
   },
   mounted: function () {
     document.addEventListener('mousemove', this.onPointerMove)
     document.addEventListener('mouseup', this.onPointerUp)
+  },
+  updated: function () {
+    let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
+    roundCssTransformMatrix(element)
   },
   beforeDestroy: function () {
     document.removeEventListener('mousemove', this.onPointerMove)
@@ -127,15 +126,10 @@ export default {
 }
 
 .draggable {
-  outline: red solid 1px;
   transform-origin: top left;
   margin: 0px;
   padding: 0px;
   display: inline-block;
   line-height: 0;
-}
-
-.transformAnchor {
-  outline: green solid 1px;
 }
 </style>

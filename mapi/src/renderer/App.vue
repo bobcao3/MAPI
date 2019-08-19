@@ -51,10 +51,18 @@
             <i class="material-icons">photo_library</i>
           </li>
           <li>
-            <i class="material-icons">format_bold</i>
+            <i
+              class="material-icons"
+              v-bind:class="{ toggled : editingState.selected.bold }"
+              v-on:click="editingState.selected.bold = !editingState.selected.bold"
+            >format_bold</i>
           </li>
           <li>
-            <i class="material-icons">format_italic</i>
+            <i
+              class="material-icons"
+              v-bind:class="{ toggled : editingState.selected.italic }"
+              v-on:click="editingState.selected.italic = !editingState.selected.italic"
+            >format_italic</i>
           </li>
           <li>
             <select class="uk-select navbar-selections" v-model="editingState.selected.font">
@@ -193,7 +201,10 @@ export default {
           anchor: { x: 50, y: 100 },
           size: { x: 100, y: 70 },
           font: "'Roboto', sans-serif",
-          fontSize: '16'
+          fontSize: '16',
+          color: '#FF8080',
+          bold: false,
+          italic: false
         }
       ],
       editingState: {
