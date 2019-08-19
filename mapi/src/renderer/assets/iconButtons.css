@@ -3,7 +3,8 @@
     margin-left: 0.3em;
     margin-right: 0.3em;
     width: 1em;
-    transition: color 0.1s ease;
+    transition: color 0.3s ease;
+    transition: text-shadow 0.3s ease;
     cursor: default;
 }
 
@@ -15,10 +16,6 @@
     color: #ff80ab;
 }
 
-.material-icons.toggled:hover {
-    color: rgb(195, 97, 130);
-}
-
 .material-icons:hover {
-    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 0.5em rgba(255, 255, 255, 0.4)
 }
