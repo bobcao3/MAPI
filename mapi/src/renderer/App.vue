@@ -94,7 +94,14 @@
             </select>
           </li>
           <li>
-            <i class="material-icons">format_color_fill_24px</i>
+            <i class="material-icons" v-bind:style="{ color: editingState.selected.textColor }">format_color_text</i>
+            <!--This is the UIkit dropdown  -->
+            <div id="colorpicker" class="uk-navbar-dropdown">
+              <sketch-colorpicker :value="editingState.selected.textColor" @input="updateTextColor"></sketch-colorpicker>
+            </div>
+          </li>
+          <li>
+            <i class="material-icons" v-bind:style="{ color: editingState.selected.color }">format_color_fill</i>
             <!--This is the UIkit dropdown  -->
             <div id="colorpicker" class="uk-navbar-dropdown">
               <sketch-colorpicker :value="editingState.selected.color" @input="updateColor" :presetColors="[
@@ -299,6 +306,10 @@ export default {
     updateColor (color) {
       let c = color.rgba
       this.editingState.selected.color = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
+    },
+    updateTextColor (color) {
+      let c = color.rgba
+      this.editingState.selected.textColor = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
     },
     closeApp () {
       console.log('close')

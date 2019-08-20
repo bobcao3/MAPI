@@ -62,6 +62,7 @@
     "material-icons": "^0.3.1",
     "pson": "^2.0.0",
     "slash": "^3.0.0",
+    "typeface-roboto": "0.0.75",
     "uikit": "^3.1.7",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
