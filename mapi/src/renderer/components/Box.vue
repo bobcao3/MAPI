@@ -5,7 +5,7 @@
     v-bind:id="boxdata.id"
     v-bind:initialAnchor="boxdata.anchor"
     v-on:v-select="onSelect"
-    v-bind:class=" { overflowVisible: childrenOrSelfSelected } "
+    v-bind:class=" { overflowVisible: editingState.viewAll || childrenOrSelfSelected } "
     v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px', backgroundColor: boxdata.color, backgroundImage: boxdata.image, backgroundSize: boxdata.size.x + 'px ' + boxdata.size.y + 'px' } "
     v-on:dblclick="onDoubleClick"
     v-on="$listeners"

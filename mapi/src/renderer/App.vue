@@ -48,7 +48,11 @@
             >crop_5_4</i>
           </li>
           <li>
-            <i class="material-icons">layers</i>
+            <i
+              class="material-icons"
+              v-bind:class="{ toggled : editingState.viewAll }"
+              v-on:click="editingState.viewAll = !editingState.viewAll"
+            >layers</i>
           </li>
         </ul>
       </div>
@@ -241,7 +245,8 @@ export default {
         zoomLevel: 1.0,
         isCreateNewBox: false,
         isEditingText: false,
-        blockHistory: false
+        blockHistory: false,
+        viewAll: false
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
