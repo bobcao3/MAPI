@@ -3,12 +3,16 @@
     class="box"
     v-bind:id="boxdata.id"
     v-bind:initialAnchor="boxdata.anchor"
-    v-on:v-select="editingState.selected = boxdata"
-    v-bind:class=" { selected: editingState.selected === boxdata } "
+    v-on:v-select="onSelect"
+    v-bind:class=" { overflowVisible: childrenOrSelfSelected } "
     v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px', backgroundColor: boxdata.color, backgroundImage: boxdata.image, backgroundSize: boxdata.size.x + 'px ' + boxdata.size.y + 'px' } "
+    v-on:dblclick="onDoubleClick"
+    v-on="$listeners"
+    v-bind:externalHandle="editingState.selected === boxdata && editingState.isEditingText"
   >
     <textarea
       v-bind:style=" { fontFamily: boxdata.font, fontSize: boxdata.fontSize + 'px', fontWeight: boxdata.bold ? 'bold' : 'normal', fontStyle: boxdata.italic ? 'italic' : 'normal', color: boxdata.textColor } "
+      v-bind:class=" { edit: editingState.isEditingText } "
       v-model="boxdata.text"
     ></textarea>
 
@@ -17,6 +21,7 @@
       v-bind:key="box.id"
       v-bind:editingState="editingState"
       v-bind:boxdata="box"
+      :ref='box.id'
     />
   </draggable>
 </template>
@@ -32,7 +37,25 @@ export default {
       text: ''
     }
   },
-  methods: {},
+  methods: {
+    onDoubleClick () {
+      this.editingState.isEditingText = true
+    },
+    onSelect () {
+      if (this.editingState.selected !== this.boxdata) {
+        this.editingState.selected = this.boxdata
+        this.editingState.isEditingText = false
+      }
+    }
+  },
+  computed: {
+    childrenOrSelfSelected () {
+      for (let v in this.$refs) {
+        if (this.$refs[v][0].childrenOrSelfSelected) return true
+      }
+      return this.editingState.selected === this.boxdata
+    }
+  },
   components: {
     draggable
   }
@@ -56,18 +79,24 @@ export default {
   pointer-events: none;
 }
 
-.box.edit > textarea {
+.box > textarea.edit {
   pointer-events: auto;
+  cursor: text;
+  user-select: text;
 }
 
 .box {
   transition: font-weight 0.2s ease, font-size 0.1s ease;
 
-  --scale: 1.0;
-
   box-sizing: border-box;
   border-style: solid;
-  border-width: calc(3px / var(--scale));
+  border-width: 0.3em;
   border-color: rgba(255,255,255,0.2);
+
+  overflow: hidden;
+}
+
+.box.overflowVisible {
+  overflow: visible;
 }
 </style>

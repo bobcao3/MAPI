@@ -5,7 +5,7 @@
       ref="canvas"
       v-bind:infiniteSize="true"
       v-on:v-dragmove="updateBackground"
-      v-on:v-select="editingState.selected = undefined"
+      v-on:v-select="onSelect"
     >
       <box
         v-for="box in boxes"
@@ -225,7 +225,8 @@ export default {
         windowBounds: currentWindow.getBounds(),
         file: undefined,
         zoomLevel: 1.0,
-        isCreateNewBox: false
+        isCreateNewBox: false,
+        isEditingText: false
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
@@ -245,6 +246,10 @@ export default {
     }
   },
   methods: {
+    onSelect () {
+      this.editingState.selected = undefined
+      this.editingState.isEditingText = false
+    },
     createBox (x, y) {
       // This defines the new box data
       let newBox = {

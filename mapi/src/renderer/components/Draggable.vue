@@ -4,6 +4,7 @@
     v-bind:style="{ transform: !infiniteSize && 'scale3d(' + scale.x + ', ' + scale.y + ', 1) translate3d(' + anchor.x + 'px, ' + anchor.y + 'px, ' + layerZ + 'px)' }"
     v-on:pointerdown.stop="onPointerDown"
     class="draggable"
+    v-on="$listeners"
   >
     <div
       v-if="infiniteSize"
@@ -103,11 +104,14 @@ export default {
       }
     },
     getLocalXY (viewportX, viewportY) {
-      let target = this.infiniteSize ? this.$refs.transformAnchor : this.$el
-      let boxRectangle = target.getBoundingClientRect()
-      if (!this.infiniteSize) viewportY -= boxRectangle.height
-      let localX = (viewportX - boxRectangle.left) / this.scale.x
-      let localY = (viewportY - boxRectangle.top) / this.scale.y
+      let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
+      let box = element.getBoundingClientRect()
+
+      let scalex = element.offsetWidth / box.width
+      let scaley = element.offsetHeight / box.height
+
+      let localX = (viewportX - box.left) * scalex
+      let localY = (viewportY - box.top) * scaley
 
       return {x: localX, y: localY}
     }
@@ -149,5 +153,7 @@ export default {
   padding: 0px;
   display: inline-block;
   line-height: 0;
+  top: 0px;
+  left: 0px;
 }
 </style>
