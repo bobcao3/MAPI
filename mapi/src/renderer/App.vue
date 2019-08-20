@@ -56,7 +56,7 @@
         <ul class="uk-navbar-nav" v-if="editingState.selected">
           <!-- Editing options -->
           <li>
-            <i class="material-icons">delete_outline</i>
+            <i class="material-icons" v-on:click="deleteSelected(editingState.selected, boxes)">delete_outline</i>
           </li>
           <li>
             <i class="material-icons" v-on:click="setImage">photo_library</i>
@@ -310,6 +310,16 @@ export default {
     updateTextColor (color) {
       let c = color.rgba
       this.editingState.selected.textColor = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
+    },
+    deleteSelected (box, boxes) {
+      for (let id in boxes) {
+        if (boxes[id] === box) {
+          boxes.splice(id, 1)
+          this.editingState.selected = undefined
+          return
+        }
+        this.deleteSelected(box, boxes[id].children)
+      }
     },
     closeApp () {
       console.log('close')

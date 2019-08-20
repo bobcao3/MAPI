@@ -51,7 +51,7 @@ export default {
   computed: {
     childrenOrSelfSelected () {
       for (let v in this.$refs) {
-        if (this.$refs[v][0].childrenOrSelfSelected) return true
+        if (this.$refs[v][0] && this.$refs[v][0].childrenOrSelfSelected) return true
       }
       return this.editingState.selected === this.boxdata
     }
