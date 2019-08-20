@@ -399,6 +399,8 @@ export default {
           this.$nextTick(() => {
             this.undoHistory = []
             this.redoHistory = []
+
+            this.recordHistory()
           })
 
           this.editingState.file = fileNames[0]
@@ -418,7 +420,8 @@ export default {
         let boxes = this.undoHistory.pop()
         this.redoHistory.push(boxes)
         this.boxes = jsonCopy(this.undoHistory[this.undoHistory.length - 1])
-        console.log('History popped ', this.undoHistory.length, boxes)
+        console.log('History popped ', this.undoHistory.length)
+        this.editingState.selected = undefined
       }
     },
     redo: function () {
