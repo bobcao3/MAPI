@@ -35,10 +35,10 @@
             <i class="material-icons" v-on:click="saveFile">save</i>
           </li>
           <li>
-            <i class="material-icons">undo</i>
+            <i class="material-icons" v-on:click="undo">undo</i>
           </li>
           <li>
-            <i class="material-icons">redo</i>
+            <i class="material-icons" v-on:click="redo">redo</i>
           </li>
           <li>
             <i
@@ -208,6 +208,14 @@ import fs from 'fs'
 import { Sketch } from 'vue-color'
 import slash from 'slash'
 
+function jsonEquals (a, b) {
+  return JSON.stringify(a) === JSON.stringify(b)
+}
+
+function jsonCopy (a) {
+  return JSON.parse(JSON.stringify(a))
+}
+
 console.log(path)
 
 const { remote } = require('electron')
@@ -229,11 +237,11 @@ export default {
       editingState: {
         selected: undefined,
         isMovingWindow: false,
-        windowBounds: currentWindow.getBounds(),
         file: undefined,
         zoomLevel: 1.0,
         isCreateNewBox: false,
-        isEditingText: false
+        isEditingText: false,
+        blockHistory: false
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
@@ -249,7 +257,9 @@ export default {
         { text: 'Comfortaa', value: "'Comfortaa', cursive" },
         { text: 'Roboto Mono', value: "'Roboto Mono', monospace" },
         { text: 'Cutive Mono', value: "'Cutive Mono', monospace" }
-      ]
+      ],
+      undoHistory: [],
+      redoHistory: []
     }
   },
   methods: {
@@ -385,10 +395,38 @@ export default {
           }
 
           this.boxes = pson.decode(data)
-        })
 
-        this.editingState.file = fileNames[0]
+          this.$nextTick(() => {
+            this.undoHistory = []
+            this.redoHistory = []
+          })
+
+          this.editingState.file = fileNames[0]
+        })
       })
+    },
+    recordHistory: function () {
+      if (this.undoHistory.length > 0 && jsonEquals(this.boxes, this.undoHistory[this.undoHistory.length - 1])) return
+
+      this.undoHistory.push(jsonCopy(this.boxes))
+      this.redoHistory = []
+
+      console.log('History added ', this.undoHistory.length)
+    },
+    undo: function () {
+      if (this.undoHistory.length > 1) {
+        let boxes = this.undoHistory.pop()
+        this.redoHistory.push(boxes)
+        this.boxes = jsonCopy(this.undoHistory[this.undoHistory.length - 1])
+        console.log('History popped ', this.undoHistory.length, boxes)
+      }
+    },
+    redo: function () {
+      if (this.redoHistory.length > 0) {
+        let boxes = this.redoHistory.pop()
+        this.undoHistory.push(boxes)
+        this.boxes = jsonCopy(this.undoHistory[this.undoHistory.length - 1])
+      }
     },
     onwheel (event) {
       event.preventDefault()
@@ -432,8 +470,18 @@ export default {
     resizer,
     'sketch-colorpicker': Sketch
   },
+  watch: {
+    'editingState.blockHistory': function () {
+      if (!this.editingState.blockHistory) this.recordHistory()
+    }
+  },
   mounted () {
     this.updateBackground()
+    this.$watch('boxes', function () {
+      if (!this.editingState.blockHistory) this.recordHistory()
+    }, {
+      deep: true
+    })
   }
 }
 </script>
