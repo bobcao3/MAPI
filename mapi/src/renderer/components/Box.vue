@@ -8,9 +8,16 @@
     v-bind:style=" { width: boxdata.size.x + 'px', height: boxdata.size.y + 'px', backgroundColor: boxdata.color, backgroundImage: boxdata.image, backgroundSize: boxdata.size.x + 'px ' + boxdata.size.y + 'px' } "
   >
     <textarea
-      v-bind:style=" { fontFamily: boxdata.font, fontSize: boxdata.fontSize + 'px', fontWeight: boxdata.bold ? 'bold' : 'normal', fontStyle: boxdata.italic ? 'italic' : 'normal' } "
+      v-bind:style=" { fontFamily: boxdata.font, fontSize: boxdata.fontSize + 'px', fontWeight: boxdata.bold ? 'bold' : 'normal', fontStyle: boxdata.italic ? 'italic' : 'normal', color: boxdata.textColor } "
       v-model="boxdata.text"
     ></textarea>
+
+    <box
+      v-for="box in boxdata.children"
+      v-bind:key="box.id"
+      v-bind:editingState="editingState"
+      v-bind:boxdata="box"
+    />
   </draggable>
 </template>
 
@@ -18,6 +25,7 @@
 import draggable from '@/components/Draggable.vue'
 
 export default {
+  name: 'box',
   props: ['boxdata', 'editingState'],
   data: function () {
     return {
@@ -44,6 +52,12 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+
+  pointer-events: none;
+}
+
+.box.edit > textarea {
+  pointer-events: auto;
 }
 
 .box {

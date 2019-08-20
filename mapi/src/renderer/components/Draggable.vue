@@ -38,7 +38,7 @@ function roundCssTransformMatrix (el) {
 
 export default {
   props: ['infiniteSize', 'initialScale', 'initialAnchor', 'externalHandle'],
-  data: function () {
+  data () {
     return {
       anchor: this.initialAnchor
         ? this.initialAnchor
@@ -68,7 +68,7 @@ export default {
     }
   },
   methods: {
-    onPointerDown: function (event) {
+    onPointerDown (event) {
       this.anchorStart = { ...this.anchor }
       this.onDragging = true
       this.pointerStart.x = event.clientX
@@ -76,7 +76,7 @@ export default {
       this.pointerId = event.pointerId
       this.$emit('v-select', event)
     },
-    onPointerMove: function (event) {
+    onPointerMove (event) {
       if (this.onDragging && this.pointerId === event.pointerId) {
         if (this.externalHandle) {
           this.$emit('v-dragmove', event, this.$data)
@@ -96,31 +96,31 @@ export default {
         }
       }
     },
-    onPointerUp: function (event) {
+    onPointerUp (event) {
       if (this.onDragging && this.pointerId === event.pointerId) {
-        this.onPointerMove(event)
         this.onDragging = false
-        this.$emit('v-dragend')
+        this.$emit('v-dragend', event)
       }
     },
     getLocalXY (viewportX, viewportY) {
       let target = this.infiniteSize ? this.$refs.transformAnchor : this.$el
       let boxRectangle = target.getBoundingClientRect()
+      if (!this.infiniteSize) viewportY -= boxRectangle.height
       let localX = (viewportX - boxRectangle.left) / this.scale.x
       let localY = (viewportY - boxRectangle.top) / this.scale.y
 
       return {x: localX, y: localY}
     }
   },
-  mounted: function () {
+  mounted () {
     document.addEventListener('pointermove', this.onPointerMove)
     document.addEventListener('pointerup', this.onPointerUp)
   },
-  updated: function () {
+  updated () {
     let element = this.infiniteSize ? this.$refs.transformAnchor : this.$el
     roundCssTransformMatrix(element)
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     document.removeEventListener('pointermove', this.onPointerMove)
     document.removeEventListener('pointerup', this.onPointerUp)
   }
@@ -136,7 +136,14 @@ export default {
   height: 100vh;
 }
 
+.draggable .transformAnchor {
+  width: 1em;
+  height: 1em;
+  /* Otherwise it can't detect zoom */
+}
+
 .draggable {
+  position: absolute;
   transform-origin: top left;
   margin: 0px;
   padding: 0px;

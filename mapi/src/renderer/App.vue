@@ -1,12 +1,11 @@
 <template>
-  <div id="app" v-on:wheel="onwheel">
+  <div id="app" v-on:wheel="onwheel" v-on:click="canvasClick">
     <draggable
       id="graph-canvas"
       ref="canvas"
       v-bind:infiniteSize="true"
       v-on:v-dragmove="updateBackground"
       v-on:v-select="editingState.selected = undefined"
-      v-bind:initialScale="{x:1.0, y:1.0}"
     >
       <box
         v-for="box in boxes"
@@ -24,6 +23,7 @@
       class="uk-navbar-container non-select uk-light"
       id="navBar"
       uk-navbar
+      v-on:click.stop
     >
       <div class="uk-navbar-left">
         <a class="uk-navbar-item uk-logo">MAPI</a>
@@ -41,7 +41,11 @@
             <i class="material-icons">redo</i>
           </li>
           <li>
-            <i class="material-icons">crop_5_4</i>
+            <i
+              class="material-icons"
+              v-bind:class="{ toggled : editingState.isCreateNewBox }"
+              v-on:click="editingState.isCreateNewBox = !editingState.isCreateNewBox"
+            >crop_5_4</i>
           </li>
           <li>
             <i class="material-icons">layers</i>
@@ -212,27 +216,16 @@ let currentWindow = remote.getCurrentWindow()
 currentWindow.setMenu(null)
 
 export default {
-  data: function () {
+  data () {
     return {
-      boxes: [
-        {
-          id: uuidv4(),
-          anchor: { x: 50, y: 100 },
-          size: { x: 100, y: 70 },
-          font: "'Roboto', sans-serif",
-          fontSize: '16',
-          color: '#FF8080',
-          bold: false,
-          italic: false,
-          image: undefined
-        }
-      ],
+      boxes: [],
       editingState: {
         selected: undefined,
         isMovingWindow: false,
         windowBounds: currentWindow.getBounds(),
         file: undefined,
-        zoomLevel: 1.0
+        zoomLevel: 1.0,
+        isCreateNewBox: false
       },
       textSizeOptions: [
         { text: 'Main text', value: '16' },
@@ -252,7 +245,45 @@ export default {
     }
   },
   methods: {
-    updateBackground: function () {
+    createBox (x, y) {
+      // This defines the new box data
+      let newBox = {
+        id: uuidv4(),
+        anchor: {
+          x: x, y: y
+        },
+        size: {
+          x: 100 + Math.random() * 100,
+          y: 100 + Math.random() * 100 // Random position as example
+        },
+        textColor: '#0c0c0c', // Color of text
+        font: "'Roboto', sans-serif",
+        fontSize: '16',
+        color: '#FF8080',
+        bold: false,
+        italic: false,
+        image: undefined,
+        children: []
+      }
+      // Now insert this new box into the data
+      if (this.editingState.selected) {
+        // This is a sub-box
+        this.editingState.selected.children.push(newBox)
+      } else {
+        // This is a top level box
+        this.boxes.push(newBox)
+      }
+    },
+    canvasClick (event) {
+      if (this.editingState.isCreateNewBox) {
+        let vue = event.target.__vue__
+        if (!vue) return
+        let pos = vue.getLocalXY(event.clientX, event.clientY)
+        this.createBox(pos.x, pos.y)
+        this.editingState.isCreateNewBox = false
+      }
+    },
+    updateBackground () {
       let data = document.getElementById('graph-canvas').__vue__
       let bg = document.getElementById('graph-canvas')
       bg.style.setProperty('--bg-offset-x', data.anchor.x + 'px')
@@ -260,15 +291,15 @@ export default {
       bg.style.setProperty('--scale-x', data.scale.x)
       bg.style.setProperty('--scale-y', data.scale.y)
     },
-    updateColor: function (color) {
+    updateColor (color) {
       let c = color.rgba
       this.editingState.selected.color = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
     },
-    closeApp: function () {
+    closeApp () {
       console.log('close')
       currentWindow.close()
     },
-    setImage: function () {
+    setImage () {
       dialog.showOpenDialog((fileNames) => {
         if (fileNames === undefined) {
           console.log('No file selected')
@@ -284,7 +315,7 @@ export default {
         })
       })
     },
-    saveFile: function () {
+    saveFile () {
       let dataBuf = pson.encode(this.boxes).toBuffer()
       if (this.editingState.file) {
         fs.writeFile(this.editingState.file, dataBuf, (err) => {
@@ -314,7 +345,7 @@ export default {
         })
       }
     },
-    loadFile: function () {
+    loadFile () {
       dialog.showOpenDialog((fileNames) => {
         if (fileNames === undefined) {
           console.log('No file selected')
@@ -333,7 +364,7 @@ export default {
         this.editingState.file = fileNames[0]
       })
     },
-    onwheel: function (event) {
+    onwheel (event) {
       event.preventDefault()
 
       const wheelDelta = 0.001
@@ -375,7 +406,7 @@ export default {
     resizer,
     'sketch-colorpicker': Sketch
   },
-  mounted: function () {
+  mounted () {
     this.updateBackground()
   }
 }
